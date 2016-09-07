@@ -1,0 +1,97 @@
+apply plugin: "java"
+apply plugin: "groovy"
+apply plugin: "maven"
+apply plugin: "signing"
+apply plugin: "idea"
+
+repositories {
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+    compile "commons-io:commons-io:2.4"
+    compile 'com.github.arguslab:jawa-compiler_2.11:0.0.2'
+}
+
+description "Gradle Jawa Plugin."
+group = "com.github.arguslab"
+version = "1.0-SNAPSHOT"
+sourceCompatibility = JavaVersion.VERSION_1_6
+targetCompatibility = JavaVersion.VERSION_1_6
+
+def uploadToSonatypeRepository = hasProperty("sonatypeUserName")
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            snapshotRepository(url: uri("gh-pages/repository/snapshot"))
+
+            if (uploadToSonatypeRepository) {
+                def repositoryUrl = version.endsWith("-SNAPSHOT") ? "https://oss.sonatype.org/content/repositories/snapshots"
+                        : "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                repository(url: repositoryUrl) {
+                    authentication(userName: sonatypeUserName, password: sonatypePassword)
+                }
+                pom.project {
+                    name "Gradle Jawa Plugin"
+                    packaging "jar"
+                    description project.description
+                    url "https://github.com/arguslab/gradle-jawa-plugin"
+
+                    scm {
+                        url "scm:git@github.com:arguslab/gradle-jawa-plugin.git"
+                        connection "scm:git@github.com:arguslab/gradle-jawa-plugin.git"
+                        developerConnection "scm:git@github.com:arguslab/gradle-jawa-plugin.git"
+                    }
+
+                    licenses {
+                        license {
+                            name "Eclipse-1.0"
+                            url "http://www.opensource.org/licenses/eclipse-1.0.php"
+                            distribution "repo"
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id "fgwei"
+                            name "Fengguo (Hugo) Wei"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+task groovydocJar(type: Jar, dependsOn: Groovydoc) {
+    from groovydoc.destinationDir
+    classifier = "javadoc"
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = "sources"
+}
+
+artifacts {
+    archives jar
+    archives groovydocJar
+    archives sourceJar
+}
+
+signing {
+    if (uploadToSonatypeRepository) {
+        sign configurations.archives
+    }
+}
