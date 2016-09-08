@@ -21,6 +21,10 @@ dependencies {
     compile 'com.github.arguslab:jawa-compiler_2.11:0.0.2'
 }
 
+plugins {
+    id "com.jfrog.bintray" version "1.7"
+}
+
 description "Gradle Jawa Plugin."
 group = "com.github.arguslab"
 version = "1.0-SNAPSHOT"

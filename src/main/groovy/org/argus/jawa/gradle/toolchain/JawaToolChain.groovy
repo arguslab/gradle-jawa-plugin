@@ -16,6 +16,8 @@ import org.gradle.platform.base.internal.toolchain.ToolChainInternal
 
 /**
  * A set of tools for building Jawa applications
+ *
+ * @author <a href="mailto:fgwei521@gmail.com">Fengguo Wei</a>
  */
 public interface JawaToolChain extends ToolChain, ToolChainInternal<JawaPlatform> {
 }

@@ -22,16 +22,16 @@ public class DefaultJawaPlatform implements JawaPlatform {
 
     @Override
     public String getJawaVersion() {
-        return jawaVersion;
+        return jawaVersion
     }
 
     @Override
     public String getDisplayName() {
-        return String.format("Jawa Platform (Jawa %s)", jawaVersion);
+        return String.format("Jawa Platform (Jawa %s)", jawaVersion)
     }
 
     @Override
     public String getName() {
-        return String.format("JawaPlatform%s", jawaVersion);
+        return String.format("JawaPlatform%s", jawaVersion)
     }
 }

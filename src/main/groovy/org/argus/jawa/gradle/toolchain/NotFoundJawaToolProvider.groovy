@@ -49,7 +49,7 @@ public class NotFoundJawaToolProvider implements ToolProvider {
 
     @Override
     public void explain(TreeVisitor<? super String> visitor) {
-        visitor.node("Cannot provide Scala Compiler")
+        visitor.node("Cannot provide Jawa Compiler")
         visitor.startChildren()
         visitor.node(exception.getCause().getMessage())
         visitor.endChildren()

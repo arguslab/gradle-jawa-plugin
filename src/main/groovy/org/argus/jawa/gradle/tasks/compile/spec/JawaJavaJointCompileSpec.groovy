@@ -8,7 +8,7 @@
  * Detailed contributors are listed in the CONTRIBUTOR.md
  */
 
-package org.argus.jawa.gradle.spec
+package org.argus.jawa.gradle.tasks.compile.spec
 
 import org.gradle.api.internal.tasks.compile.JavaCompileSpec
 

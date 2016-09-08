@@ -8,15 +8,16 @@
  * Detailed contributors are listed in the CONTRIBUTOR.md
  */
 
-package org.argus.jawa.gradle
+package org.argus.jawa.gradle.tasks.compile
 
 import org.argus.jawa.compiler.compile.CompileProgress
-import org.argus.jawa.core.MsgLevel$
+import org.argus.jawa.compiler.log.Level
+import org.argus.jawa.core.MsgLevel
 import org.argus.jawa.core.PrintReporter
-import org.argus.jawa.gradle.spec.JawaJavaJointCompileSpec
+import org.argus.jawa.gradle.tasks.compile.spec.JawaJavaJointCompileSpec
 import org.gradle.api.internal.tasks.SimpleWorkResult
 import org.gradle.api.internal.tasks.compile.CompilationFailedException
-import org.gradle.api.internal.tasks.compile.JavaCompilerArgumentsBuilder
+import org.gradle.api.logging.LogLevel
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import org.gradle.api.tasks.WorkResult
@@ -30,53 +31,55 @@ import org.gradle.internal.nativeintegration.services.NativeServices
 import org.gradle.internal.service.DefaultServiceRegistry
 import org.gradle.internal.service.scopes.GlobalScopeServices
 import org.gradle.util.GFileUtils
+import scala.collection.immutable.List
+import org.gradle.language.base.internal.compile.Compiler
 
 import static org.gradle.cache.internal.filelock.LockOptionsBuilder.mode
 
 /**
  * @author <a href="mailto:fgwei521@gmail.com">Fengguo Wei</a>
  */
-public class JawaCompiler implements org.gradle.language.base.internal.compile.Compiler<JawaJavaJointCompileSpec>, Serializable {
+public class JawaCompiler implements Compiler<JawaJavaJointCompileSpec>, Serializable {
     private static final Logger LOGGER = Logging.getLogger(JawaCompiler.class)
-    private Iterable<File> jawaClasspath
     private File gradleUserHome
 
     private static final String JAWA_DIR_SYSTEM_PROPERTY = "jawa.dir"
     public static final String JAWA_DIR_IGNORED_MESSAGE = "In order to guarantee parallel safe Jawa compilation, Gradle does not support the '" + JAWA_DIR_SYSTEM_PROPERTY + "' system property and ignores any value provided."
 
 
-    public JawaCompiler(Iterable<File> jawaClasspath, File gradleUserHome) {
-        this.jawaClasspath = jawaClasspath
+    public JawaCompiler(File gradleUserHome) {
         this.gradleUserHome = gradleUserHome
     }
 
     @Override
     public WorkResult execute(JawaJavaJointCompileSpec spec) {
-        return MyCompiler.execute(jawaClasspath, gradleUserHome, spec)
+        return MyCompiler.execute(gradleUserHome, spec)
     }
 
     private static class MyCompiler {
-        static WorkResult execute(final Iterable<File> jawaClasspath, File gradleUserHome, final JawaJavaJointCompileSpec spec) {
+        static WorkResult execute(File gradleUserHome, final JawaJavaJointCompileSpec spec) {
             LOGGER.info("Compiling with Jawa compiler.")
 
             final def logger = new LoggerAdapter()
 
             def compiler = createParallelSafeCompiler(gradleUserHome)
 
-            def scalacOptions = new JawaCompilerArgumentsGenerator().generate(spec)
-            List<String> javacOptions = new JavaCompilerArgumentsBuilder(spec).includeClasspath(false).build()
-            Inputs inputs = Inputs.create(ImmutableList.copyOf(spec.getClasspath()), ImmutableList.copyOf(spec.getSource()), spec.getDestinationDir(),
-                    scalacOptions, javacOptions, spec.getScalaCompileOptions().getIncrementalOptions().getAnalysisFile(), spec.getAnalysisMap(), "mixed", getIncOptions(), true)
-            if (LOGGER.isDebugEnabled()) {
-                Inputs.debug(inputs, logger)
-            }
-
-            if (spec.getCompileOptions().isForce()) {
+            if (spec.getJawaCompileOptions().isForce()) {
                 GFileUtils.deleteDirectory(spec.getDestinationDir())
             }
 
+            def sources = spec.getSource().files
+            List<File> source_scala = List.empty()
+            for(File src: sources) {
+                source_scala.$colon$colon(src)
+            }
+            List<File> outputDirs_scala = List.empty()
+            outputDirs_scala.$colon$colon(spec.getDestinationDir())
+            def reporter = new PrintReporter(MsgLevel.WARNING())
+            if(spec.getCompileOptions().isVerbose())
+                reporter = new PrintReporter(MsgLevel.INFO())
             try {
-                compiler.compile(sources, outputs, new PrintReporter(MsgLevel$.MODULE$.INFO()), logger, new NoCompileProgress)
+                compiler.compile(source_scala, outputDirs_scala, reporter, logger, new NoCompileProgress())
             } catch (Exception e) {
                 throw new CompilationFailedException(e)
             }
@@ -157,6 +160,19 @@ public class JawaCompiler implements org.gradle.language.base.internal.compile.C
         @Override
         public void trace(Throwable exception) {
             LOGGER.trace(exception.getMessage())
+        }
+
+        @Override
+        void log(scala.Enumeration.Value level, String msg) {
+            if(level == Level.Debug())
+                LOGGER.log(LogLevel.DEBUG, msg)
+            else if(level == Level.Error())
+                LOGGER.log(LogLevel.ERROR, msg)
+            else if(level == Level.Info())
+                LOGGER.log(LogLevel.INFO, msg)
+            else if(level == Level.Warn())
+                LOGGER.log(LogLevel.WARN, msg)
+            else LOGGER.log(LogLevel.QUIET, msg)
         }
     }
 

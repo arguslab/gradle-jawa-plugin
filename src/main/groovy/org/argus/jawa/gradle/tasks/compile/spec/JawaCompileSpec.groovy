@@ -8,15 +8,14 @@
  * Detailed contributors are listed in the CONTRIBUTOR.md
  */
 
-package org.argus.jawa.gradle.spec
+package org.argus.jawa.gradle.tasks.compile.spec
 
+import org.argus.jawa.gradle.tasks.JawaCompileOptions
 import org.gradle.api.internal.tasks.compile.JvmLanguageCompileSpec
 
 /**
  * @author <a href="mailto:fgwei521@gmail.com">Fengguo Wei</a>
  */
 public interface JawaCompileSpec extends JvmLanguageCompileSpec {
-    Map<File, File> getAnalysisMap()
-
-    void setAnalysisMap(Map<File, File> analysisMap)
+    JawaCompileOptions getJawaCompileOptions()
 }

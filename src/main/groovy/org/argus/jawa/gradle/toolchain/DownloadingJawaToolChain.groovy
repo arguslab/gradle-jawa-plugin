@@ -55,7 +55,7 @@ public class DownloadingJawaToolChain implements JawaToolChain {
         try {
             def jawaClasspath = resolveDependency(String.format("com.github.arguslab:jawa-compiler:%s", targetPlatform.getJawaVersion()))
             def resolvedScalaClasspath = jawaClasspath.resolve()
-            return new DefaultJawaToolProvider(gradleUserHomeDir, rootProjectDir, compilerDaemonManager, resolvedScalaClasspath, resolvedZincClasspath)
+            return new DefaultJawaToolProvider(gradleUserHomeDir, rootProjectDir, compilerDaemonManager)
 
         } catch(ResolveException resolveException) {
             return new NotFoundJawaToolProvider(resolveException)
