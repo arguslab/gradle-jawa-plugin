@@ -24,7 +24,7 @@ public class JawaPluginIntegrationTestTask extends DefaultTask {
         [
                 ["app", true],
         ].each { projectName, runOnTravis ->
-            def gradleArgs = ["clean", "connectedCheck", "uninstallAll"]
+            def gradleArgs = ["clean", "compile"]
             [
                     ["2.2.1", true,  "0.0.2"],
             ].each { testParameters ->
@@ -73,7 +73,7 @@ public class JawaPluginIntegrationTestTask extends DefaultTask {
             gradleProperties.store(it, getClass().getName())
         }
         def gradleWrapper = new GradleWrapper(projectDir)
-        def args = ["--no-daemon", "--stacktrace", "-Pcom.android.build.threadPoolSize=5"] + tasks
+        def args = ["--no-daemon", "--stacktrace"] + tasks
         println "gradlew $args"
         def process = gradleWrapper.execute(args)
         [Thread.start { ByteStreams.copy(process.in, System.out) },

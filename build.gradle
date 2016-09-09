@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2016. Fengguo Wei and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Detailed contributors are listed in the CONTRIBUTOR.md
+ */
+
 import org.argus.jawa.gradle.JawaPluginIntegrationTestTask
 
 apply plugin: "java"
@@ -16,13 +26,19 @@ buildscript {
     }
 }
 
+apply from: "dependencies.gradle"
+
 dependencies {
     compile gradleApi()
     compile localGroovy()
-    compile "commons-io:commons-io:2.4"
-    compile 'com.github.arguslab:jawa-compiler_2.11:0.0.2'
-    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4@jar'
+    compile libraries.commons_io
+    compile libraries.groovy
+    compile libraries.jawa_compiler
+    testCompile libraries.spock
+    testCompile libraries.jmock
 }
+
+
 
 
 description "Gradle Jawa Plugin."
