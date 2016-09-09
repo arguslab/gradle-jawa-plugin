@@ -33,7 +33,7 @@ import static org.gradle.internal.FileUtils.hasExtension
  * @author <a href="mailto:fgwei521@gmail.com">Fengguo Wei</a>
  */
 public class NormalizingJawaCompiler implements Compiler<JawaJavaJointCompileSpec> {
-    private static final Logger LOGGER = Logging.getLogger(NormalizingJawaCompiler.class)
+    private static final Logger LOGGER = Logging.getLogger(NormalizingJawaCompiler)
     private final Compiler<JawaJavaJointCompileSpec> delegate
 
     public NormalizingJawaCompiler(Compiler<JawaJavaJointCompileSpec> delegate) {

@@ -82,14 +82,15 @@ class JawaPluginTest {
         jawaPlugin.apply(project)
 
         def task = project.tasks['compileJawa']
-        assertThat(task, instanceOf(JawaCompile.class))
+        assertThat(task, instanceOf(JawaCompile))
         assertThat(task.description, equalTo('Compiles the main Jawa source.'))
-        assertThat(task, dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME))
+        assertThat(project.tasks[JavaPlugin.COMPILE_JAVA_TASK_NAME], dependsOn('compileJawa'))
 
         task = project.tasks['compileTestJawa']
-        assertThat(task, instanceOf(JawaCompile.class))
+        assertThat(task, instanceOf(JawaCompile))
         assertThat(task.description, equalTo('Compiles the test Jawa source.'))
-        assertThat(task, dependsOn(JavaPlugin.COMPILE_TEST_JAVA_TASK_NAME, JavaPlugin.CLASSES_TASK_NAME))
+        assertThat(task, dependsOn(JavaPlugin.CLASSES_TASK_NAME))
+        assertThat(project.tasks[JavaPlugin.COMPILE_TEST_JAVA_TASK_NAME], dependsOn('compileTestJawa', JavaPlugin.CLASSES_TASK_NAME))
     }
 
     @Test

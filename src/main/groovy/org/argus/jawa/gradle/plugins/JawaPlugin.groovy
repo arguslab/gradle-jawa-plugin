@@ -22,7 +22,7 @@ import org.gradle.api.plugins.JavaPlugin
  */
 public class JawaPlugin implements Plugin<Project> {
     public void apply(Project project) {
-        project.getPluginManager().apply(JawaBasePlugin.class)
-        project.getPluginManager().apply(JavaPlugin.class)
+        project.pluginManager.apply JawaBasePlugin
+        project.pluginManager.apply JavaPlugin
     }
 }

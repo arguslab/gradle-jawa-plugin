@@ -40,40 +40,40 @@ public class JawaCompile extends AbstractCompile {
     protected void compile() {
         DefaultJawaJavaJointCompileSpec spec = createSpec()
         WorkResult result = getCompiler(spec).execute(spec)
-        setDidWork(result.getDidWork())
+        setDidWork(result.didWork)
     }
 
     protected Compiler<JawaJavaJointCompileSpec> getCompiler(JawaJavaJointCompileSpec spec) {
         if (compiler == null) {
-            ProjectInternal projectInternal = (ProjectInternal) getProject()
-            CompilerDaemonManager compilerDaemonManager = getServices().get(CompilerDaemonManager)
-            InProcessCompilerDaemonFactory inProcessCompilerDaemonFactory = getServices().get(InProcessCompilerDaemonFactory)
-            JavaCompilerFactory javaCompilerFactory = getServices().get(JavaCompilerFactory)
-            JawaCompilerFactory groovyCompilerFactory = new JawaCompilerFactory(projectInternal, javaCompilerFactory, compilerDaemonManager, inProcessCompilerDaemonFactory)
-            Compiler<JawaJavaJointCompileSpec> delegatingCompiler = groovyCompilerFactory.newCompiler(spec)
-            compiler = new CleaningJawaCompiler(delegatingCompiler, getOutputs())
+            def projectInternal = (ProjectInternal) services
+            def compilerDaemonManager = services.get(CompilerDaemonManager)
+            def inProcessCompilerDaemonFactory = services.get(InProcessCompilerDaemonFactory)
+            def javaCompilerFactory = services.get(JavaCompilerFactory)
+            def jawaCompilerFactory = new JawaCompilerFactory(projectInternal, javaCompilerFactory, compilerDaemonManager, inProcessCompilerDaemonFactory)
+            def delegatingCompiler = jawaCompilerFactory.newCompiler(spec)
+            compiler = new CleaningJawaCompiler(delegatingCompiler, outputs)
         }
         return compiler
     }
 
     private DefaultJawaJavaJointCompileSpec createSpec() {
         DefaultJawaJavaJointCompileSpec spec = new DefaultJawaJavaJointCompileSpecFactory(compileOptions).create()
-        spec.setSource(getSource())
-        spec.setDestinationDir(getDestinationDir())
-        spec.setWorkingDir(getProject().getProjectDir())
-        spec.setTempDir(getTemporaryDir())
-        spec.setClasspath(getClasspath())
-        spec.setSourceCompatibility(getSourceCompatibility())
-        spec.setTargetCompatibility(getTargetCompatibility())
+        spec.setSource(source)
+        spec.setDestinationDir(destinationDir)
+        spec.setWorkingDir(project.projectDir)
+        spec.setTempDir(temporaryDir)
+        spec.setClasspath(classpath)
+        spec.setSourceCompatibility(sourceCompatibility)
+        spec.setTargetCompatibility(targetCompatibility)
         spec.setCompileOptions(compileOptions)
         spec.setJawaCompileOptions(jawaCompileOptions)
         return spec
     }
 
     /**
-     * Gets the options for the Groovy compilation.
+     * Gets the options for the Jawa compilation.
      *
-     * @return The Groovy compile options. Never returns null.
+     * @return The Jawa compile options. Never returns null.
      */
     @Nested
     public JawaCompileOptions getJawaOptions() {

@@ -22,12 +22,12 @@ buildscript {
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 apply plugin: "java"
 apply plugin: "org.argus.jawa"
 
 dependencies {
-    compile "com.github.argus:jawa-compiler:$jawaCompilerVersion"
+    compile "com.github.arguslab:jawa-compiler_2.11:$jawaCompilerVersion"
 }

@@ -122,7 +122,7 @@ public class JawaCompileOptions extends AbstractOptions {
     }
 
     /**
-     * Returns options for running the Groovy compiler in a separate process. These options only take effect
+     * Returns options for running the Jawa compiler in a separate process. These options only take effect
      * if {@code fork} is set to {@code true}.
      */
     @Nested
@@ -131,7 +131,7 @@ public class JawaCompileOptions extends AbstractOptions {
     }
 
     /**
-     * Sets options for running the Groovy compiler in a separate process. These options only take effect
+     * Sets options for running the Jawa compiler in a separate process. These options only take effect
      * if {@code fork} is set to {@code true}.
      */
     public void setForkOptions(JawaForkOptions forkOptions) {

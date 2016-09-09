@@ -51,7 +51,7 @@ class JawaBasePluginTest {
         def task = project.tasks['compileCustomJawa']
         assertThat(task, instanceOf(JawaCompile))
         assertThat(task.description, equalTo('Compiles the custom Jawa source.'))
-        assertThat(task, dependsOn('compileCustomJava'))
+        assertThat(project.tasks['compileCustomJava'], dependsOn('compileCustomJawa'))
     }
 
     @Test void dependenciesOfJavaPluginTasksIncludeJawaCompileTasks() {
