@@ -46,9 +46,9 @@ public class JawaCompile extends AbstractCompile {
     protected Compiler<JawaJavaJointCompileSpec> getCompiler(JawaJavaJointCompileSpec spec) {
         if (compiler == null) {
             ProjectInternal projectInternal = (ProjectInternal) getProject()
-            CompilerDaemonManager compilerDaemonManager = getServices().get(CompilerDaemonManager.class)
-            InProcessCompilerDaemonFactory inProcessCompilerDaemonFactory = getServices().get(InProcessCompilerDaemonFactory.class)
-            JavaCompilerFactory javaCompilerFactory = getServices().get(JavaCompilerFactory.class)
+            CompilerDaemonManager compilerDaemonManager = getServices().get(CompilerDaemonManager)
+            InProcessCompilerDaemonFactory inProcessCompilerDaemonFactory = getServices().get(InProcessCompilerDaemonFactory)
+            JavaCompilerFactory javaCompilerFactory = getServices().get(JavaCompilerFactory)
             JawaCompilerFactory groovyCompilerFactory = new JawaCompilerFactory(projectInternal, javaCompilerFactory, compilerDaemonManager, inProcessCompilerDaemonFactory)
             Compiler<JawaJavaJointCompileSpec> delegatingCompiler = groovyCompilerFactory.newCompiler(spec)
             compiler = new CleaningJawaCompiler(delegatingCompiler, getOutputs())

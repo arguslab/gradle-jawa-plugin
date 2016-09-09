@@ -70,11 +70,11 @@ class JawaPluginTest {
 
         def sourceSet = project.sourceSets.main
         assertThat(sourceSet.jawa.displayName, equalTo("main Jawa source"))
-        assertThat(sourceSet.jawa.srcDirs, equalTo(toLinkedSet(project.file("src/main/groovy"))))
+        assertThat(sourceSet.jawa.srcDirs, equalTo(toLinkedSet(project.file("src/main/jawa"))))
 
         sourceSet = project.sourceSets.test
-        assertThat(sourceSet.groovy.displayName, equalTo("test Groovy source"))
-        assertThat(sourceSet.groovy.srcDirs, equalTo(toLinkedSet(project.file("src/test/groovy"))))
+        assertThat(sourceSet.jawa.displayName, equalTo("test Jawa source"))
+        assertThat(sourceSet.jawa.srcDirs, equalTo(toLinkedSet(project.file("src/test/jawa"))))
     }
 
     @Test
@@ -85,6 +85,11 @@ class JawaPluginTest {
         assertThat(task, instanceOf(JawaCompile.class))
         assertThat(task.description, equalTo('Compiles the main Jawa source.'))
         assertThat(task, dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME))
+
+        task = project.tasks['compileTestJawa']
+        assertThat(task, instanceOf(JawaCompile.class))
+        assertThat(task.description, equalTo('Compiles the test Jawa source.'))
+        assertThat(task, dependsOn(JavaPlugin.COMPILE_TEST_JAVA_TASK_NAME, JavaPlugin.CLASSES_TASK_NAME))
     }
 
     @Test
@@ -93,5 +98,8 @@ class JawaPluginTest {
 
         def task = project.tasks[JavaPlugin.CLASSES_TASK_NAME]
         assertThat(task, dependsOn(hasItem('compileJawa')))
+
+        task = project.tasks[JavaPlugin.TEST_CLASSES_TASK_NAME]
+        assertThat(task, dependsOn(hasItem('compileTestJawa')))
     }
 }

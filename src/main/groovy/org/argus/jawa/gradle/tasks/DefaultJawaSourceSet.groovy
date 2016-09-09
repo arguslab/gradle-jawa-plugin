@@ -18,19 +18,19 @@ import org.gradle.util.ConfigureUtil
  * @author <a href="mailto:fgwei521@gmail.com">Fengguo Wei</a>
  */
 public class DefaultJawaSourceSet implements JawaSourceSet {
-    private final SourceDirectorySet groovy
-    private final SourceDirectorySet allGroovy
+    private final SourceDirectorySet jawa
+    private final SourceDirectorySet allJawa
 
     public DefaultJawaSourceSet(String displayName, SourceDirectorySetFactory sourceDirectorySetFactory) {
-        groovy = sourceDirectorySetFactory.create(String.format("%s Jawa source", displayName))
-        groovy.getFilter().include("**/*.java", "**/*.pilar")
-        allGroovy = sourceDirectorySetFactory.create(String.format("%s Jawa source", displayName))
-        allGroovy.source(groovy)
-        allGroovy.getFilter().include("**/*.pilar")
+        jawa = sourceDirectorySetFactory.create(String.format("%s Jawa source", displayName))
+        jawa.getFilter().include("**/*.java", "**/*.pilar")
+        allJawa = sourceDirectorySetFactory.create(String.format("%s Jawa source", displayName))
+        allJawa.source(jawa)
+        allJawa.getFilter().include("**/*.pilar")
     }
 
     public SourceDirectorySet getJawa() {
-        return groovy
+        return jawa
     }
 
     public JawaSourceSet jawa(Closure configureClosure) {
@@ -39,6 +39,6 @@ public class DefaultJawaSourceSet implements JawaSourceSet {
     }
 
     public SourceDirectorySet getAllJawa() {
-        return allGroovy
+        return allJawa
     }
 }

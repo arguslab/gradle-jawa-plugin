@@ -40,7 +40,7 @@ import static org.gradle.cache.internal.filelock.LockOptionsBuilder.mode
  * @author <a href="mailto:fgwei521@gmail.com">Fengguo Wei</a>
  */
 public class JawaCompiler implements Compiler<JawaJavaJointCompileSpec>, Serializable {
-    private static final Logger LOGGER = Logging.getLogger(JawaCompiler.class)
+    private static final Logger LOGGER = Logging.getLogger(JawaCompiler)
     private File gradleUserHome
 
     private static final String JAWA_DIR_SYSTEM_PROPERTY = "jawa.dir"
@@ -93,7 +93,7 @@ public class JawaCompiler implements Compiler<JawaJavaJointCompileSpec>, Seriali
 
         static org.argus.jawa.compiler.compile.JawaCompiler createParallelSafeCompiler(File gradleUserHome) {
             def cacheHomeDir = gradleUserHome
-            def cacheRepository = JawaCompilerServices.getInstance(cacheHomeDir).get(CacheRepository.class)
+            def cacheRepository = JawaCompilerServices.getInstance(cacheHomeDir).get(CacheRepository)
             final PersistentCache cache = cacheRepository.cache("jawa")
                     .withDisplayName("Jawa compiler cache")
                     .withLockOptions(mode(FileLockManager.LockMode.Exclusive))

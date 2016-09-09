@@ -15,7 +15,7 @@ ext {
 
 versions.commons_io = 'commons-io:commons-io:2.4'
 
-versions.groovy = "2.4.7"
+versions.groovy = "2.4.4"
 
 libraries.commons_io = dependencies.module(versions.commons_io)
 

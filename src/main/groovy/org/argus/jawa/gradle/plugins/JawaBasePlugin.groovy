@@ -17,6 +17,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.internal.file.SourceDirectorySetFactory
+import org.gradle.api.internal.plugins.DslObject
 import org.gradle.api.internal.tasks.DefaultSourceSet
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.JavaPluginConvention
@@ -37,14 +38,14 @@ class JawaBasePlugin implements Plugin<Project> {
     private Project project
 
     @Inject
-    public GroovyBasePlugin(SourceDirectorySetFactory sourceDirectorySetFactory) {
+    public JawaBasePlugin(SourceDirectorySetFactory sourceDirectorySetFactory) {
         this.sourceDirectorySetFactory = sourceDirectorySetFactory
     }
 
     public void apply(Project project) {
         this.project = project
         project.getPluginManager().apply(JavaBasePlugin.class)
-        JavaBasePlugin javaBasePlugin = project.getPlugins().getPlugin(JavaBasePlugin.class)
+        def javaBasePlugin = project.getPlugins().getPlugin(JavaBasePlugin.class)
         configureSourceSetDefaults(javaBasePlugin)
     }
 
@@ -52,22 +53,23 @@ class JawaBasePlugin implements Plugin<Project> {
         project.getConvention().getPlugin(JavaPluginConvention.class).getSourceSets().all(new Action<SourceSet>() {
             public void execute(SourceSet sourceSet) {
                 final DefaultJawaSourceSet jawaSourceSet = new DefaultJawaSourceSet(((DefaultSourceSet) sourceSet).getDisplayName(), sourceDirectorySetFactory)
+                new DslObject(sourceSet).getConvention().getPlugins().put("jawa", jawaSourceSet)
 
-                jawaSourceSet.getJawa().srcDir(String.format("src/%s/jawa", sourceSet.getName()))
+                jawaSourceSet.jawa.srcDir(String.format("src/%s/jawa", sourceSet.getName()))
                 sourceSet.getResources().getFilter().exclude(new Spec<FileTreeElement>() {
                     public boolean isSatisfiedBy(FileTreeElement element) {
-                        return jawaSourceSet.getJawa().contains(element.getFile())
+                        return jawaSourceSet.jawa.contains(element.getFile())
                     }
                 })
-                sourceSet.getAllJava().source(jawaSourceSet.getJawa())
-                sourceSet.getAllSource().source(jawaSourceSet.getJawa())
+                sourceSet.allJava.source(jawaSourceSet.jawa)
+                sourceSet.getAllSource().source(jawaSourceSet.jawa)
 
                 String compileTaskName = sourceSet.getCompileTaskName("jawa")
                 JawaCompile compile = project.getTasks().create(compileTaskName, JawaCompile.class)
                 javaBasePlugin.configureForSourceSet(sourceSet, compile)
                 compile.dependsOn(sourceSet.getCompileJavaTaskName())
                 compile.setDescription(String.format("Compiles the %s Jawa source.", sourceSet.getName()))
-                compile.setSource(jawaSourceSet.getJawa())
+                compile.setSource(jawaSourceSet.jawa)
 
                 project.getTasks().getByName(sourceSet.getClassesTaskName()).dependsOn(compileTaskName)
             }

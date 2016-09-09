@@ -19,5 +19,5 @@ import org.gradle.api.tasks.compile.BaseForkOptions
  * @author <a href="mailto:fgwei521@gmail.com">Fengguo Wei</a>
  */
 public class JawaForkOptions extends BaseForkOptions {
-    private static final long serialVersionUID = 0;
+    private static final long serialVersionUID = 0
 }

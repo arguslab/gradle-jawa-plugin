@@ -20,22 +20,22 @@ import org.gradle.api.tasks.compile.CompileOptions
  */
 class DefaultJawaJavaJointCompileSpecFactory extends AbstractJavaCompileSpecFactory<DefaultJawaJavaJointCompileSpec> {
     public DefaultJawaJavaJointCompileSpecFactory(CompileOptions compileOptions) {
-        super(compileOptions);
+        super(compileOptions)
     }
 
     @Override
     protected DefaultJawaJavaJointCompileSpec getCommandLineSpec() {
-        return new DefaultCommandLineJawaJavaJointCompileSpec();
+        return new DefaultCommandLineJawaJavaJointCompileSpec()
     }
 
     @Override
     protected DefaultJawaJavaJointCompileSpec getForkingSpec() {
-        return new DefaultForkingJawaJavaJointCompileSpec();
+        return new DefaultForkingJawaJavaJointCompileSpec()
     }
 
     @Override
     protected DefaultJawaJavaJointCompileSpec getDefaultSpec() {
-        return new DefaultJawaJavaJointCompileSpec();
+        return new DefaultJawaJavaJointCompileSpec()
     }
 
     private static class DefaultCommandLineJawaJavaJointCompileSpec extends DefaultJawaJavaJointCompileSpec implements CommandLineJavaCompileSpec {
