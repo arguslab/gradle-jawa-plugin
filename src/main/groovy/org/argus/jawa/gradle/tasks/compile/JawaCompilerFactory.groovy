@@ -12,7 +12,6 @@ package org.argus.jawa.gradle.tasks.compile
 
 import org.argus.jawa.gradle.tasks.compile.daemon.DaemonJawaCompiler
 import org.argus.jawa.gradle.tasks.compile.spec.JawaJavaJointCompileSpec
-import org.argus.jawa.gradle.tasks.JawaCompileOptions
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.internal.tasks.compile.JavaCompilerFactory
 import org.gradle.api.internal.tasks.compile.daemon.CompilerDaemonFactory

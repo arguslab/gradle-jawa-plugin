@@ -8,11 +8,12 @@
  * Detailed contributors are listed in the CONTRIBUTOR.md
  */
 
-package org.argus.jawa.gradle.tasks
+package org.argus.jawa.gradle.tasks.compile
 
 import com.google.common.collect.ImmutableList
 import org.gradle.api.Incubating
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.compile.AbstractOptions
 
 /**
@@ -30,6 +31,8 @@ public class JawaCompileOptions extends AbstractOptions {
     private boolean fork = true
 
     private List<String> fileExtensions = ImmutableList.of("java", "pilar")
+
+    private JawaForkOptions forkOptions = new JawaForkOptions()
 
     /**
      * Whether to force the compilation of all files.
@@ -88,14 +91,14 @@ public class JawaCompileOptions extends AbstractOptions {
     }
 
     /**
-     * Tells whether to run the Groovy compiler in a separate process. Defaults to {@code true}.
+     * Tells whether to run the Jawa compiler in a separate process. Defaults to {@code true}.
      */
     public boolean isFork() {
         return fork
     }
 
     /**
-     * Sets whether to run the Groovy compiler in a separate process. Defaults to {@code true}.
+     * Sets whether to run the Jawa compiler in a separate process. Defaults to {@code true}.
      */
     public void setFork(boolean fork) {
         this.fork = fork
@@ -116,5 +119,42 @@ public class JawaCompileOptions extends AbstractOptions {
     @Incubating
     public void setFileExtensions(List<String> fileExtensions) {
         this.fileExtensions = fileExtensions
+    }
+
+    /**
+     * Returns options for running the Groovy compiler in a separate process. These options only take effect
+     * if {@code fork} is set to {@code true}.
+     */
+    @Nested
+    public JawaForkOptions getForkOptions() {
+        return forkOptions
+    }
+
+    /**
+     * Sets options for running the Groovy compiler in a separate process. These options only take effect
+     * if {@code fork} is set to {@code true}.
+     */
+    public void setForkOptions(JawaForkOptions forkOptions) {
+        this.forkOptions = forkOptions
+    }
+
+    /**
+     * Convenience method to set {@link JawaForkOptions} with named parameter syntax.
+     * Calling this method will set {@code fork} to {@code true}.
+     */
+    public JawaCompileOptions fork(Map<String, Object> forkArgs) {
+        fork = true
+        forkOptions.define(forkArgs)
+        return this
+    }
+
+    /**
+     * Internal method.
+     */
+    @Override
+    public Map<String, Object> optionMap() {
+        def map = super.optionMap()
+        map.putAll(forkOptions.optionMap())
+        return map
     }
 }

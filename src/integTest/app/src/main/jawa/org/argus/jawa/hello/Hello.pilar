@@ -1,0 +1,14 @@
+record `org.argus.jawa.hello.Hello` @kind class @AccessFlag PUBLIC extends `org.argus.jawa.hello.IHello` @kind interface {
+}
+procedure `void` `org.argus.jawa.hello.Hello.<init>`(`org.argus.jawa.hello.Hello` Hello_v0 @kind this) @owner ^`org.argus.jawa.hello.Hello` @signature `Lorg/argus/jawa/Hello;.<init>:()V` @AccessFlag PUBLIC_CONSTRUCTOR {
+
+  #L1.  call `java.lang.Object.<init>`(Hello_v0) @signature `Ljava/lang/Object;.<init>:()V` @classDescriptor ^`java.lang.Object` @kind direct;
+  #L2.  return  @kind void;
+}
+procedure `java.lang.String` `org.argus.jawa.hello.Hello.greeting`(`org.argus.jawa.hello.Hello` Hello_v0 @kind this) @owner ^`org.argus.jawa.hello.Hello` @signature `Lorg/argus/jawa/Hello;.greeting:()Ljava/lang/String;` @AccessFlag PUBLIC {
+
+  `java.lang.String` String_v1;
+
+  #L3.  String_v1:= "Hello Jawa!" @kind object;
+  #L4.  return String_v1 @kind object;
+}

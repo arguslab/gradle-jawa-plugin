@@ -8,14 +8,16 @@
  * Detailed contributors are listed in the CONTRIBUTOR.md
  */
 
-package org.argus.jawa.gradle.tasks.compile.spec
+package org.argus.jawa.gradle.tasks.compile
 
-import org.argus.jawa.gradle.tasks.compile.JawaCompileOptions
-import org.gradle.api.internal.tasks.compile.JvmLanguageCompileSpec
+import org.gradle.api.tasks.compile.BaseForkOptions
 
 /**
+ * Fork options for Jawa compilation. Only take effect if {@code JawaCompileOptions.fork}
+ * is {@code true}.
+ *
  * @author <a href="mailto:fgwei521@gmail.com">Fengguo Wei</a>
  */
-public interface JawaCompileSpec extends JvmLanguageCompileSpec {
-    JawaCompileOptions getJawaCompileOptions()
+public class JawaForkOptions extends BaseForkOptions {
+    private static final long serialVersionUID = 0;
 }

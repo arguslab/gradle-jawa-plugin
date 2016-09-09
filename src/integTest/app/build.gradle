@@ -1,0 +1,23 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url snaphotRepositoryUrl
+        }
+    }
+
+    dependencies {
+        classpath "com.github.arguslab:gradle-jawa-plugin:$jawaPluginVersion"
+    }
+}
+
+repositories {
+    jcenter()
+}
+
+apply plugin: "java"
+apply plugin: "org.argus.jawa"
+
+dependencies {
+    compile "com.github.argus:jawa-compiler:$jawaCompilerVersion"
+}

@@ -10,7 +10,7 @@
 
 package org.argus.jawa.gradle.tasks.compile.spec
 
-import org.argus.jawa.gradle.tasks.JawaCompileOptions
+import org.argus.jawa.gradle.tasks.compile.JawaCompileOptions
 import org.gradle.api.internal.tasks.compile.DefaultJavaCompileSpec
 
 /**

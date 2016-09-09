@@ -14,7 +14,6 @@ import org.argus.jawa.gradle.tasks.compile.spec.JawaJavaJointCompileSpec
 import org.gradle.api.internal.tasks.compile.daemon.AbstractDaemonCompiler
 import org.gradle.api.internal.tasks.compile.daemon.CompilerDaemonFactory
 import org.gradle.api.internal.tasks.compile.daemon.DaemonForkOptions
-import org.gradle.api.tasks.compile.ForkOptions
 import org.gradle.language.base.internal.compile.Compiler
 
 /**
@@ -28,11 +27,16 @@ public class DaemonJawaCompiler extends AbstractDaemonCompiler<JawaJavaJointComp
 
     @Override
     protected DaemonForkOptions toDaemonOptions(JawaJavaJointCompileSpec spec) {
-        return createJavaForkOptions(spec)
+        return createJavaForkOptions(spec).mergeWith(createJawaForkOptions(spec))
     }
 
     private static DaemonForkOptions createJavaForkOptions(JawaJavaJointCompileSpec spec) {
-        ForkOptions options = spec.getCompileOptions().getForkOptions()
+        def options = spec.getCompileOptions().getForkOptions()
+        return new DaemonForkOptions(options.getMemoryInitialSize(), options.getMemoryMaximumSize(), options.getJvmArgs())
+    }
+
+    private static DaemonForkOptions createJawaForkOptions(JawaJavaJointCompileSpec spec) {
+        def options = spec.getJawaCompileOptions().getForkOptions()
         return new DaemonForkOptions(options.getMemoryInitialSize(), options.getMemoryMaximumSize(), options.getJvmArgs())
     }
 }

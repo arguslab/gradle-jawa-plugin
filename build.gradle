@@ -1,3 +1,5 @@
+import org.argus.jawa.gradle.JawaPluginIntegrationTestTask
+
 apply plugin: "java"
 apply plugin: "groovy"
 apply plugin: "maven"
@@ -19,11 +21,9 @@ dependencies {
     compile localGroovy()
     compile "commons-io:commons-io:2.4"
     compile 'com.github.arguslab:jawa-compiler_2.11:0.0.2'
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4@jar'
 }
 
-plugins {
-    id "com.jfrog.bintray" version "1.7"
-}
 
 description "Gradle Jawa Plugin."
 group = "com.github.arguslab"
@@ -99,3 +99,6 @@ signing {
         sign configurations.archives
     }
 }
+
+task integTest(type: JawaPluginIntegrationTestTask, dependsOn: "uploadArchives")
+task integrationTest(type: JawaPluginIntegrationTestTask, dependsOn: "uploadArchives")

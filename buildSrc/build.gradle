@@ -8,14 +8,14 @@
  * Detailed contributors are listed in the CONTRIBUTOR.md
  */
 
-package org.argus.jawa.gradle.tasks.compile.spec
+apply plugin: "groovy"
 
-import org.argus.jawa.gradle.tasks.compile.JawaCompileOptions
-import org.gradle.api.internal.tasks.compile.JvmLanguageCompileSpec
+repositories {
+    mavenCentral()
+}
 
-/**
- * @author <a href="mailto:fgwei521@gmail.com">Fengguo Wei</a>
- */
-public interface JawaCompileSpec extends JvmLanguageCompileSpec {
-    JawaCompileOptions getJawaCompileOptions()
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+    compile "com.google.guava:guava:17.0"
 }
