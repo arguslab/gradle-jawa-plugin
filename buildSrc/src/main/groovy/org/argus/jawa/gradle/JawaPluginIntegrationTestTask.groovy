@@ -31,7 +31,7 @@ public class JawaPluginIntegrationTestTask extends DefaultTask {
                 if (!travis || (runOnTravis && testParameters[1])) {
                     def gradleVersion = testParameters[0]
                     def gradleWrapperProperties = getGradleWrapperProperties(gradleVersion)
-                    def gradleProperties = getGradleProperties(testParameters.drop(2))
+                    def gradleProperties = getGradleProperties(testParameters[2])
                     println "Test $gradleArgs gradleVersion:$gradleVersion $gradleProperties"
                     runProject(projectName, gradleArgs, gradleWrapperProperties, gradleProperties)
                 }

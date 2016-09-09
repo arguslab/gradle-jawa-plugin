@@ -78,7 +78,7 @@ uploadArchives {
     }
 }
 
-task groovydocJar(type: Jar, dependsOn: Groovydoc) {
+task groovydocJar(type: Jar, dependsOn: groovydoc) {
     from groovydoc.destinationDir
     classifier = "javadoc"
 }
