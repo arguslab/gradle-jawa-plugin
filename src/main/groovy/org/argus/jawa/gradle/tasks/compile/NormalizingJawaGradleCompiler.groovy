@@ -32,11 +32,11 @@ import static org.gradle.internal.FileUtils.hasExtension
  *
  * @author <a href="mailto:fgwei521@gmail.com">Fengguo Wei</a>
  */
-public class NormalizingJawaCompiler implements Compiler<JawaJavaJointCompileSpec> {
-    private static final Logger LOGGER = Logging.getLogger(NormalizingJawaCompiler)
+public class NormalizingJawaGradleCompiler implements Compiler<JawaJavaJointCompileSpec> {
+    private static final Logger LOGGER = Logging.getLogger(NormalizingJawaGradleCompiler)
     private final Compiler<JawaJavaJointCompileSpec> delegate
 
-    public NormalizingJawaCompiler(Compiler<JawaJavaJointCompileSpec> delegate) {
+    public NormalizingJawaGradleCompiler(Compiler<JawaJavaJointCompileSpec> delegate) {
         this.delegate = delegate
     }
 
@@ -49,7 +49,7 @@ public class NormalizingJawaCompiler implements Compiler<JawaJavaJointCompileSpe
     }
 
     private static void resolveAndFilterSourceFiles(final JawaJavaJointCompileSpec spec) {
-        final List<String> fileExtensions = CollectionUtils.collect(spec.getJawaCompileOptions().getFileExtensions(), new Transformer<String, String>() {
+        final List<String> fileExtensions = CollectionUtils.collect(spec.jawaCompileOptions.fileExtensions, new Transformer<String, String>() {
             @Override
             public String transform(String extension) {
                 return '.' + extension
@@ -65,18 +65,17 @@ public class NormalizingJawaCompiler implements Compiler<JawaJavaJointCompileSpe
                 return false
             }
         })
-
         spec.setSource(new SimpleFileCollection(filtered.getFiles()))
     }
 
     private static void logSourceFiles(JawaJavaJointCompileSpec spec) {
-        if (!spec.getJawaCompileOptions().isListFiles()) {
+        if (!spec.jawaCompileOptions.listFiles) {
             return
         }
 
         StringBuilder builder = new StringBuilder()
         builder.append("Source files to be compiled:")
-        for (File file : spec.getSource()) {
+        for (File file : spec.source) {
             builder.append('\n')
             builder.append(file)
         }
@@ -98,7 +97,7 @@ public class NormalizingJawaCompiler implements Compiler<JawaJavaJointCompileSpe
         try {
             return delegate.execute(spec)
         } catch (CompilationFailedException e) {
-            if (spec.getCompileOptions().isFailOnError()) {
+            if (spec.compileOptions.failOnError) {
                 throw e
             }
             LOGGER.debug("Ignoring compilation failure.")

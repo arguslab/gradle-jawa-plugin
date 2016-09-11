@@ -21,6 +21,8 @@ import org.gradle.language.base.internal.compile.Compiler
  */
 public class DaemonJawaCompiler extends AbstractDaemonCompiler<JawaJavaJointCompileSpec> {
 
+    private static final Iterable<String> SHARED_PACKAGES = Arrays.asList("org.argus.jawa", "com.sun.tools.javac")
+
     public DaemonJawaCompiler(File daemonWorkingDir, Compiler<JawaJavaJointCompileSpec> delegate, CompilerDaemonFactory daemonFactory) {
         super(daemonWorkingDir, delegate, daemonFactory)
     }
@@ -37,6 +39,6 @@ public class DaemonJawaCompiler extends AbstractDaemonCompiler<JawaJavaJointComp
 
     private static DaemonForkOptions createJawaForkOptions(JawaJavaJointCompileSpec spec) {
         def options = spec.getJawaCompileOptions().getForkOptions()
-        return new DaemonForkOptions(options.getMemoryInitialSize(), options.getMemoryMaximumSize(), options.getJvmArgs())
+        return new DaemonForkOptions(options.getMemoryInitialSize(), options.getMemoryMaximumSize(), options.getJvmArgs(), Collections.<File>emptyList(), SHARED_PACKAGES)
     }
 }

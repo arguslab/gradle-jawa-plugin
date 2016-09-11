@@ -16,14 +16,15 @@ import org.argus.jawa.gradle.tasks.compile.spec.JawaJavaJointCompileSpec
 import org.gradle.api.internal.file.collections.SimpleFileCollection
 import org.gradle.api.tasks.compile.CompileOptions
 import spock.lang.Specification
+import org.gradle.language.base.internal.compile.Compiler
 
 /**
  * @author <a href="mailto:fgwei521@gmail.com">Fengguo Wei</a>
  */
-class NormalizingJawaCompilerTest extends Specification {
-    org.gradle.language.base.internal.compile.Compiler<JawaJavaJointCompileSpec> target = Mock()
+class NormalizingJawaGradleCompilerTest extends Specification {
+    Compiler<JawaJavaJointCompileSpec> target = Mock()
     DefaultJawaJavaJointCompileSpec spec = new DefaultJawaJavaJointCompileSpec()
-    NormalizingJawaCompiler compiler = new NormalizingJawaCompiler(target)
+    NormalizingJawaGradleCompiler compiler = new NormalizingJawaGradleCompiler(target)
 
     def setup() {
         spec.classpath = files('Dep1.jar', 'Dep2.jar', 'Dep3.jar')

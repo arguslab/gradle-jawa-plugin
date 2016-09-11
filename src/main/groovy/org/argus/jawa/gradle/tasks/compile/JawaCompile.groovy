@@ -45,7 +45,7 @@ public class JawaCompile extends AbstractCompile {
 
     protected Compiler<JawaJavaJointCompileSpec> getCompiler(JawaJavaJointCompileSpec spec) {
         if (compiler == null) {
-            def projectInternal = (ProjectInternal) services
+            def projectInternal = (ProjectInternal) project
             def compilerDaemonManager = services.get(CompilerDaemonManager)
             def inProcessCompilerDaemonFactory = services.get(InProcessCompilerDaemonFactory)
             def javaCompilerFactory = services.get(JavaCompilerFactory)
@@ -57,7 +57,7 @@ public class JawaCompile extends AbstractCompile {
     }
 
     private DefaultJawaJavaJointCompileSpec createSpec() {
-        DefaultJawaJavaJointCompileSpec spec = new DefaultJawaJavaJointCompileSpecFactory(compileOptions).create()
+        def spec = new DefaultJawaJavaJointCompileSpecFactory(compileOptions).create()
         spec.setSource(source)
         spec.setDestinationDir(destinationDir)
         spec.setWorkingDir(project.projectDir)

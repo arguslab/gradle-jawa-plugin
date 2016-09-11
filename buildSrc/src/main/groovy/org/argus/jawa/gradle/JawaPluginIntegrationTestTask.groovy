@@ -22,11 +22,12 @@ public class JawaPluginIntegrationTestTask extends DefaultTask {
     def run() {
         def travis = System.getenv("TRAVIS").toString().toBoolean()
         [
-                ["app", true],
+                ["pure-jawa", true],
+
         ].each { projectName, runOnTravis ->
-            def gradleArgs = ["clean", "build"]
+            def gradleArgs = ["clean", "jar"]
             [
-                    ["2.13", true,  "0.0.2"],
+                    ["2.13", true,  "1.0.1"],
             ].each { testParameters ->
                 if (!travis || (runOnTravis && testParameters[1])) {
                     def gradleVersion = testParameters[0]

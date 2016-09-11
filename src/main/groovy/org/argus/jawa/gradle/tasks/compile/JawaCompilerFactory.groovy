@@ -40,14 +40,15 @@ public class JawaCompilerFactory implements CompilerFactory<JawaJavaJointCompile
     @Override
     public Compiler<JawaJavaJointCompileSpec> newCompiler(JawaJavaJointCompileSpec spec) {
         JawaCompileOptions jawaOptions = spec.getJawaCompileOptions()
-        Compiler<JawaJavaJointCompileSpec> jawaCompiler = new JawaCompiler(project.getGradle().getGradleUserHomeDir())
+        Compiler<JawaJavaJointCompileSpec> jawaCompiler = new JawaGradleCompiler()
         CompilerDaemonFactory daemonFactory
-        if (jawaOptions.isFork()) {
+        if (jawaOptions.fork) {
             daemonFactory = compilerDaemonFactory
         } else {
             daemonFactory = inProcessCompilerDaemonFactory
         }
-        jawaCompiler = new DaemonJawaCompiler(project.getRootProject().getProjectDir(), jawaCompiler, daemonFactory)
-        return new NormalizingJawaCompiler(jawaCompiler)
+//        jawaCompiler = new DaemonJawaCompiler(project.getRootProject().getProjectDir(), jawaCompiler, daemonFactory)
+//        return new NormalizingJawaGradleCompiler(jawaCompiler)
+        return jawaCompiler
     }
 }
