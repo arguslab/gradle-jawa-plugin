@@ -15,10 +15,33 @@ buildscript {
         jcenter()
         mavenCentral()
     }
+
+    dependencies {
+        classpath 'org.ajoberstar:gradle-git:0.6.1'
+    }
 }
 
 plugins {
     id "com.jfrog.bintray" version "1.7"
+    id 'org.ajoberstar.grgit' version '1.4.2'
+    id 'org.ajoberstar.release-opinion' version '1.4.2'
+}
+
+import org.ajoberstar.gradle.git.release.opinion.Strategies
+import org.ajoberstar.grgit.Grgit
+
+release {
+    grgit = Grgit.open(project.rootDir)
+    defaultVersionStrategy = Strategies.SNAPSHOT
+}
+
+tasks.release.dependsOn ':publishing'
+
+ext {
+    def grgit = Grgit.open(project.rootDir)
+
+    revision = grgit.head().id
+    shortMessage = grgit.head().shortMessage
 }
 
 apply plugin: "java"
@@ -33,7 +56,7 @@ apply from: "dependencies.gradle"
 apply from: "bintray.gradle"
 apply from: "codacy.gradle"
 apply from: "sonatype.gradle"
-
+//apply from: "git.gradle"
 
 repositories {
     jcenter()
@@ -50,6 +73,7 @@ dependencies {
     testCompile libraries.jmock
 
     codacy group: 'com.codacy', name: 'codacy-coverage-reporter', version: '1.0.7'
+    codacy group: 'com.typesafe.netty', name: 'netty-http-pipelining', version: '1.1.4'
 }
 
 

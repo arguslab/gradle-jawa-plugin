@@ -45,7 +45,7 @@ bintray {
                 name = "gradle-jawa-plugin v1"
                 desc = "Gradle Jawa Plugin $name"
                 released = new Date()
-                vcsTag = getVersion().replace("-SNAPSHOT", "")
+                vcsTag = project.version.toString().replace("-SNAPSHOT", "")
                 //Optional configuration for GPG signing
                 gpg {
                     sign = true //Determines whether to GPG sign the files. The default is false
