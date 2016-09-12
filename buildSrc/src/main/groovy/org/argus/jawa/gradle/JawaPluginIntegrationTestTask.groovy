@@ -22,12 +22,14 @@ public class JawaPluginIntegrationTestTask extends DefaultTask {
     def run() {
         def travis = System.getenv("TRAVIS").toString().toBoolean()
         [
+                ["app", true],
                 ["pure-jawa", true],
+                ["java-jawa", true],
 
         ].each { projectName, runOnTravis ->
             def gradleArgs = ["clean", "jar"]
             [
-                    ["2.13", true,  "1.0.1"],
+                    ["2.13", true,  "1.0.2"],
             ].each { testParameters ->
                 if (!travis || (runOnTravis && testParameters[1])) {
                     def gradleVersion = testParameters[0]
@@ -74,7 +76,7 @@ public class JawaPluginIntegrationTestTask extends DefaultTask {
             gradleProperties.store(it, getClass().getName())
         }
         def gradleWrapper = new GradleWrapper(projectDir)
-        def args = ["--no-daemon", "--stacktrace", "--debug"] + tasks
+        def args = ["--no-daemon", "--stacktrace"] + tasks
         println "gradlew $args"
         def process = gradleWrapper.execute(args)
         [Thread.start { ByteStreams.copy(process.in, System.out) },

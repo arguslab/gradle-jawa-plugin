@@ -18,4 +18,6 @@ import org.gradle.api.internal.tasks.compile.JvmLanguageCompileSpec
  */
 public interface JawaCompileSpec extends JvmLanguageCompileSpec {
     JawaCompileOptions getJawaCompileOptions()
+    Iterable<File> getJawaClasspath()
+    void setJawaClasspath(Iterable<File> classpath)
 }

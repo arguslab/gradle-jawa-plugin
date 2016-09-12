@@ -33,12 +33,13 @@ public class DaemonJawaCompiler extends AbstractDaemonCompiler<JawaJavaJointComp
     }
 
     private static DaemonForkOptions createJavaForkOptions(JawaJavaJointCompileSpec spec) {
-        def options = spec.getCompileOptions().getForkOptions()
-        return new DaemonForkOptions(options.getMemoryInitialSize(), options.getMemoryMaximumSize(), options.getJvmArgs())
+        def options = spec.compileOptions.forkOptions
+        return new DaemonForkOptions(options.memoryInitialSize, options.memoryMaximumSize, options.jvmArgs)
     }
 
     private static DaemonForkOptions createJawaForkOptions(JawaJavaJointCompileSpec spec) {
-        def options = spec.getJawaCompileOptions().getForkOptions()
-        return new DaemonForkOptions(options.getMemoryInitialSize(), options.getMemoryMaximumSize(), options.getJvmArgs(), Collections.<File>emptyList(), SHARED_PACKAGES)
+        def options = spec.jawaCompileOptions.forkOptions
+        def jawaFiles = spec.jawaClasspath
+        return new DaemonForkOptions(options.memoryInitialSize, options.memoryMaximumSize, options.jvmArgs, jawaFiles, SHARED_PACKAGES)
     }
 }

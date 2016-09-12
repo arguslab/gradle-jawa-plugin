@@ -18,6 +18,7 @@ import org.gradle.api.internal.tasks.compile.DefaultJavaCompileSpec
  */
 public class DefaultJawaJavaJointCompileSpec extends DefaultJavaCompileSpec implements JawaJavaJointCompileSpec {
     private JawaCompileOptions compileOptions
+    private Iterable<File> jawaClasspath
 
     @Override
     public JawaCompileOptions getJawaCompileOptions() {
@@ -26,5 +27,15 @@ public class DefaultJawaJavaJointCompileSpec extends DefaultJavaCompileSpec impl
 
     public void setJawaCompileOptions(JawaCompileOptions compileOptions) {
         this.compileOptions = compileOptions
+    }
+
+    @Override
+    public Iterable<File> getJawaClasspath() {
+        return jawaClasspath
+    }
+
+    @Override
+    public void setJawaClasspath(Iterable<File> jawaClasspath) {
+        this.jawaClasspath = jawaClasspath
     }
 }

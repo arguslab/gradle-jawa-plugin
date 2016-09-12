@@ -11,6 +11,7 @@
 package org.argus.jawa.gradle.tasks.compile
 
 import com.google.common.base.Joiner
+import com.google.common.collect.Lists
 import org.argus.jawa.gradle.tasks.compile.spec.JawaJavaJointCompileSpec
 import org.gradle.api.Transformer
 import org.gradle.api.file.FileCollection
@@ -43,6 +44,8 @@ public class NormalizingJawaGradleCompiler implements Compiler<JawaJavaJointComp
     @Override
     public WorkResult execute(JawaJavaJointCompileSpec spec) {
         resolveAndFilterSourceFiles(spec)
+        resolveClasspath(spec)
+        resolveNonStringsInCompilerArgs(spec)
         logSourceFiles(spec)
         logCompilerArguments(spec)
         return delegateAndHandleErrors(spec)
@@ -66,6 +69,24 @@ public class NormalizingJawaGradleCompiler implements Compiler<JawaJavaJointComp
             }
         })
         spec.setSource(new SimpleFileCollection(filtered.getFiles()))
+    }
+
+    private static void resolveClasspath(JawaJavaJointCompileSpec spec) {
+        // Necessary for Jawa compilation to pick up output of regular and joint Java compilation,
+        // and for joint Java compilation to pick up the output of regular Java compilation.
+        // Assumes that output of regular Java compilation (which is not under this task's control) also goes
+        // into spec.getDestinationDir(). We could configure this on source set level, but then spec.getDestinationDir()
+        // would end up on the compile class path of every compile task for that source set, which may not be desirable.
+        def classPath = Lists.newArrayList(spec.classpath)
+        classPath.add(spec.getDestinationDir())
+        spec.setClasspath(classPath)
+
+        spec.setJawaClasspath(Lists.newArrayList(spec.jawaClasspath))
+    }
+
+    private static void resolveNonStringsInCompilerArgs(JawaJavaJointCompileSpec spec) {
+        // in particular, this is about GStrings
+        spec.compileOptions.setCompilerArgs(CollectionUtils.toStringList(spec.compileOptions.compilerArgs))
     }
 
     private static void logSourceFiles(JawaJavaJointCompileSpec spec) {

@@ -28,6 +28,7 @@ class NormalizingJawaGradleCompilerTest extends Specification {
 
     def setup() {
         spec.classpath = files('Dep1.jar', 'Dep2.jar', 'Dep3.jar')
+        spec.jawaClasspath = spec.classpath
         spec.source = files('House.scala', 'Person1.java', 'package.html', 'Person2.pilar')
         spec.destinationDir = new File("destinationDir")
         spec.compileOptions = new CompileOptions()

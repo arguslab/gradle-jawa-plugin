@@ -11,6 +11,8 @@
 package org.argus.jawa.gradle.tasks.compile
 
 import org.argus.jawa.gradle.tasks.compile.spec.JawaJavaJointCompileSpec
+import org.gradle.api.InvalidUserDataException
+import org.gradle.api.file.FileCollection
 import org.gradle.api.internal.ConventionTask
 import org.gradle.api.internal.project.DefaultProject
 import org.gradle.api.tasks.WorkResult
@@ -24,6 +26,8 @@ import spock.lang.Unroll
  * @author <a href="mailto:fgwei521@gmail.com">Fengguo Wei</a>
  */
 class JawaCompileTest extends AbstractCompileTest {
+    private static final boolean EMPTY_CLASSPATH = true
+    private static final boolean NON_EMPTY_CLASSPATH = false
     private JawaCompile testObj
 
     Compiler<JawaJavaJointCompileSpec> jawaCompilerMock = Mock()
@@ -42,13 +46,13 @@ class JawaCompileTest extends AbstractCompileTest {
         testObj = createTask(JawaCompile)
         testObj.setCompiler(jawaCompilerMock)
 
-        GFileUtils.touch(new File(srcDir, "incl/file.groovy"))
+        GFileUtils.touch(new File(srcDir, "incl/file.pilar"))
     }
 
     @Unroll
     def "execute: doing work == #doingWork"() {
         given:
-        setUpMocksAndAttributes(testObj)
+        setUpMocksAndAttributes(testObj, NON_EMPTY_CLASSPATH)
 
         when:
         testObj.compile()
@@ -61,8 +65,24 @@ class JawaCompileTest extends AbstractCompileTest {
         doingWork << [true, false]
     }
 
-    private void setUpMocksAndAttributes(JawaCompile compile) {
+    def "moan if jawa classpath is empty"() {
+        given:
+        setUpMocksAndAttributes(testObj, EMPTY_CLASSPATH)
+
+        when:
+        testObj.compile()
+
+        then:
+        InvalidUserDataException e = thrown()
+        e.message.contains("'testTask.jawaClasspath' must not be empty.")
+    }
+
+    private void setUpMocksAndAttributes(JawaCompile compile, final boolean jawaClasspathEmpty) {
         super.setUpMocksAndAttributes(compile)
+        final FileCollection groovyClasspathCollection = Stub(FileCollection, {
+            isEmpty() >> jawaClasspathEmpty
+        })
+        compile.setJawaClasspath(groovyClasspathCollection)
         compile.source(srcDir)
     }
 

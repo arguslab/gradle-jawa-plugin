@@ -13,10 +13,13 @@ package org.argus.jawa.gradle.tasks.compile
 import org.argus.jawa.gradle.tasks.compile.spec.DefaultJawaJavaJointCompileSpec
 import org.argus.jawa.gradle.tasks.compile.spec.DefaultJawaJavaJointCompileSpecFactory
 import org.argus.jawa.gradle.tasks.compile.spec.JawaJavaJointCompileSpec
+import org.gradle.api.InvalidUserDataException
+import org.gradle.api.file.FileCollection
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.internal.tasks.compile.JavaCompilerFactory
 import org.gradle.api.internal.tasks.compile.daemon.CompilerDaemonManager
 import org.gradle.api.internal.tasks.compile.daemon.InProcessCompilerDaemonFactory
+import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.WorkResult
@@ -32,15 +35,24 @@ import org.gradle.language.base.internal.compile.Compiler
 public class JawaCompile extends AbstractCompile {
 
     private Compiler<JawaJavaJointCompileSpec> compiler
+    private FileCollection jawaClasspath
     private final CompileOptions compileOptions = new CompileOptions()
     private final JawaCompileOptions jawaCompileOptions = new JawaCompileOptions()
 
     @Override
     @TaskAction
     protected void compile() {
-        DefaultJawaJavaJointCompileSpec spec = createSpec()
-        WorkResult result = getCompiler(spec).execute(spec)
+        checkJawaClasspathIsNonEmpty()
+        def spec = createSpec()
+        def result = getCompiler(spec).execute(spec)
         setDidWork(result.didWork)
+    }
+
+    private void checkJawaClasspathIsNonEmpty() {
+        if (getJawaClasspath().isEmpty()) {
+            throw new InvalidUserDataException("'" + getName() + ".jawaClasspath' must not be empty. If a Jawa compile dependency is provided, "
+                    + "the 'jawa-base' plugin will attempt to configure 'jawaClasspath' automatically. Alternatively, you may configure 'jawaClasspath' explicitly.")
+        }
     }
 
     protected Compiler<JawaJavaJointCompileSpec> getCompiler(JawaJavaJointCompileSpec spec) {
@@ -65,6 +77,7 @@ public class JawaCompile extends AbstractCompile {
         spec.setClasspath(classpath)
         spec.setSourceCompatibility(sourceCompatibility)
         spec.setTargetCompatibility(targetCompatibility)
+        spec.setJawaClasspath(getJawaClasspath())
         spec.setCompileOptions(compileOptions)
         spec.setJawaCompileOptions(jawaCompileOptions)
         return spec
@@ -88,6 +101,25 @@ public class JawaCompile extends AbstractCompile {
     @Nested
     public CompileOptions getOptions() {
         return compileOptions
+    }
+
+    /**
+     * Returns the classpath containing the version of Jawa to use for compilation.
+     *
+     * @return The classpath.
+     */
+    @InputFiles
+    public FileCollection getJawaClasspath() {
+        return jawaClasspath
+    }
+
+    /**
+     * Sets the classpath containing the version of Jawa to use for compilation.
+     *
+     * @param jawaClasspath The classpath. Must not be null.
+     */
+    public void setJawaClasspath(FileCollection jawaClasspath) {
+        this.jawaClasspath = jawaClasspath
     }
 
     public Compiler<JawaJavaJointCompileSpec> getCompiler() {
