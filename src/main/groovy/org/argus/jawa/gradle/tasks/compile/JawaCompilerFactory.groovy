@@ -42,7 +42,7 @@ public class JawaCompilerFactory implements CompilerFactory<JawaJavaJointCompile
         def jawaOptions = spec.jawaCompileOptions
         def jawaCompiler = new JawaGradleCompiler()
         CompilerDaemonFactory daemonFactory
-        if (!jawaOptions.fork) {
+        if (false) {
             daemonFactory = compilerDaemonFactory
         } else {
             daemonFactory = inProcessCompilerDaemonFactory
