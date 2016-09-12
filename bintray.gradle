@@ -42,10 +42,10 @@ bintray {
             githubRepo = 'arguslab/gradle-jawa-plugin' //Optional Github repository
             githubReleaseNotesFile = 'README.md' //Optional Github readme file
             version {
-                name = getVersion()
+                name = "gradle-jawa-plugin v1"
                 desc = "Gradle Jawa Plugin $name"
                 released = new Date()
-                vcsTag = getVersion()
+                vcsTag = getVersion().replace("-SNAPSHOT", "")
                 //Optional configuration for GPG signing
                 gpg {
                     sign = true //Determines whether to GPG sign the files. The default is false
