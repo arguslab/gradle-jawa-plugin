@@ -52,7 +52,7 @@ You can customize those directories similar to java.
 android {
     sourceSets {
         main {
-            scala {
+            jawa {
                 srcDir "path/to/main/jawa" // default: "src/main/jawa"
             }
         }
