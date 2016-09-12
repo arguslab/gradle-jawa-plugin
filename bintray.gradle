@@ -20,8 +20,8 @@ publishing {
 }
 
 bintray {
-    user = "$bintray_user"
-    key = "$bintray_api_key"
+    user = bintray_user
+    key = bintray_api_key
     publications = ['MyPublication']
     pkg {
         repo = 'maven'
@@ -46,13 +46,13 @@ bintray {
             //Optional configuration for GPG signing
             gpg {
                 sign = true //Determines whether to GPG sign the files. The default is false
-                passphrase = "$passphrase" //Optional. The passphrase for GPG signing'
+                passphrase = passphrase //Optional. The passphrase for GPG signing'
             }
             //Optional configuration for Maven Central sync of the version
             mavenCentralSync {
                 sync = true //[Default: true] Determines whether to sync the version to Maven Central.
-                user = "$mavenuser" //OSS user token: mandatory
-                password = "$mavenpaasword" //OSS user password: mandatory
+                user = mavenuser //OSS user token: mandatory
+                password = mavenpaasword //OSS user password: mandatory
                 close = '1' //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
             }
         }
