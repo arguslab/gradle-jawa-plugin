@@ -10,23 +10,35 @@
 
 import org.argus.jawa.gradle.JawaPluginIntegrationTestTask
 
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+}
+
+plugins {
+    id "com.jfrog.bintray" version "1.7"
+}
+
 apply plugin: "java"
 apply plugin: "groovy"
 apply plugin: "maven"
 apply plugin: "signing"
 apply plugin: "idea"
-
-repositories {
-    mavenCentral()
-}
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-}
+apply plugin: "jacoco"
+apply plugin: 'maven-publish'
 
 apply from: "dependencies.gradle"
+apply from: "bintray.gradle"
+apply from: "codacy.gradle"
+apply from: "sonatype.gradle"
+
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
 
 dependencies {
     compile gradleApi()
@@ -36,6 +48,8 @@ dependencies {
     compile libraries.jawa_compiler
     testCompile libraries.spock
     testCompile libraries.jmock
+
+    codacy group: 'com.codacy', name: 'codacy-coverage-reporter', version: '1.0.7'
 }
 
 
@@ -43,56 +57,9 @@ dependencies {
 
 description "Gradle Jawa Plugin."
 group = "com.github.arguslab"
-version = "1.0-SNAPSHOT"
-sourceCompatibility = JavaVersion.VERSION_1_6
-targetCompatibility = JavaVersion.VERSION_1_6
-
-def uploadToSonatypeRepository = hasProperty("sonatypeUserName")
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            snapshotRepository(url: uri("gh-pages/repository/snapshot"))
-
-            if (uploadToSonatypeRepository) {
-                def repositoryUrl = version.endsWith("-SNAPSHOT") ? "https://oss.sonatype.org/content/repositories/snapshots"
-                        : "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-                repository(url: repositoryUrl) {
-                    authentication(userName: sonatypeUserName, password: sonatypePassword)
-                }
-                pom.project {
-                    name "Gradle Jawa Plugin"
-                    packaging "jar"
-                    description project.description
-                    url "https://github.com/arguslab/gradle-jawa-plugin"
-
-                    scm {
-                        url "scm:git@github.com:arguslab/gradle-jawa-plugin.git"
-                        connection "scm:git@github.com:arguslab/gradle-jawa-plugin.git"
-                        developerConnection "scm:git@github.com:arguslab/gradle-jawa-plugin.git"
-                    }
-
-                    licenses {
-                        license {
-                            name "Eclipse-1.0"
-                            url "http://www.opensource.org/licenses/eclipse-1.0.php"
-                            distribution "repo"
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            id "fgwei"
-                            name "Fengguo (Hugo) Wei"
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+version = "1.0"
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 task groovydocJar(type: Jar, dependsOn: groovydoc) {
     from groovydoc.destinationDir
@@ -108,13 +75,11 @@ artifacts {
     archives jar
     archives groovydocJar
     archives sourceJar
-}
-
-signing {
-    if (uploadToSonatypeRepository) {
-        sign configurations.archives
-    }
+    archives qaReportsJar
 }
 
 task integTest(type: JawaPluginIntegrationTestTask, dependsOn: "uploadArchives")
-task integrationTest(type: JawaPluginIntegrationTestTask, dependsOn: "uploadArchives")
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.13'
+}

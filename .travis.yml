@@ -1,0 +1,16 @@
+language: groovy
+jdk: oraclejdk8
+sudo: false
+branches:
+  only:
+  - master
+script:
+  - ./gradlew --debug check
+  - ./gradlew --debug uploadArchives
+  - ./gradlew --stop
+  - ./gradlew --debug integTest
+after_success:
+- ./gradlew --debug uploadCoverageToCodacy
+notifications:
+  email:
+  - fgwei521@gmail.com

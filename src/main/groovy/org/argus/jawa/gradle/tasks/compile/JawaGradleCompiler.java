@@ -62,7 +62,7 @@ public class JawaGradleCompiler implements Compiler<JawaJavaJointCompileSpec>, S
 
         @Override
         public void startUnit(String unitPath) {
-
+            // This method is intentionally empty
         }
 
         @Override

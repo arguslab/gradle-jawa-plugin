@@ -1,0 +1,136 @@
+/*
+ * Copyright (c) 2016. Fengguo Wei and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Detailed contributors are listed in the CONTRIBUTOR.md
+ */
+
+ext{
+    qaReportsDir = file("${buildDir}/test-results")
+
+    // TODO: Increase these, but needs to be set per subproject
+    limits = [
+            'instruction': 40.23,
+            'branch'     : 23.76,
+            'line'       : 41.65,
+            'complexity' : 37.5,
+            'method'     : 47.44,
+            'class'      : 67.86
+    ]
+
+}
+
+configurations {
+    codacy
+}
+
+jacoco {
+    toolVersion = "0.7.6.201602180812"
+    reportsDir = file("$qaReportsDir/jacoco")
+}
+
+jacocoTestReport {
+    executionData = fileTree(dir: "${buildDir}", include: '**/jacoco/*.exec')
+
+    reports {
+        xml.enabled true
+        xml.destination "${buildDir}/test-results/jacoco/${archivesBaseName}.xml"
+        csv.enabled false
+        html.enabled true
+        html.destination "${buildDir}/test-results/jacoco/html"
+    }
+
+    doLast {
+        def report = reports.xml.destination
+        logger.lifecycle("Checking coverage results: ${report}")
+
+        def parser = new XmlParser()
+        parser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        parser.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false)
+        def results = parser.parse(report)
+
+        def percentage = {
+            if( it == null ) {
+                return 100
+            }
+            def covered = it.'@covered' as Double
+            def missed = it.'@missed' as Double
+            ((covered / (covered + missed)) * 100).round(2)
+        }
+
+        def counters = results.counter
+        def metrics = [:]
+        metrics << [
+                'instruction': percentage(counters.find { it.'@type'.equals('INSTRUCTION') }),
+                'branch'     : percentage(counters.find { it.'@type'.equals('BRANCH') }),
+                'line'       : percentage(counters.find { it.'@type'.equals('LINE') }),
+                'complexity' : percentage(counters.find { it.'@type'.equals('COMPLEXITY') }),
+                'method'     : percentage(counters.find { it.'@type'.equals('METHOD') }),
+                'class'      : percentage(counters.find { it.'@type'.equals('CLASS') })
+        ]
+
+
+        def failures = []
+        def success = []
+        metrics.each {
+            def limit = limits[it.key]
+            if (it.value < limit) {
+                failures.add("- ${it.key} coverage rate is: ${it.value}%, minimum is ${limit}%")
+            }
+            else {
+                success.add("- ${it.key} coverage rate is: ${it.value}%, minimum is ${limit}%")
+            }
+        }
+
+        logger.quiet("------------------ Code Coverage Passes -----------------------")
+        success.each { logger.quiet(it) }
+        logger.quiet("---------------------------------------------------------------")
+        if (failures) {
+            logger.quiet("------------------ Code Coverage Failed -----------------------")
+            failures.each { logger.quiet(it) }
+            logger.quiet("---------------------------------------------------------------")
+            throw new GradleException("Code coverage failed")
+        } else{
+            logger.quiet("Passed Code Coverage Checks")
+        }
+    }
+}
+
+check.dependsOn jacocoTestReport
+
+task qaReportsJar(type: Jar, dependsOn : check) {
+    classifier = 'qaReports'
+    from file("${qaReportsDir}")
+}
+
+task uploadCoverageToCodacy(type: JavaExec, dependsOn : jacocoTestReport) {
+    main = "com.codacy.CodacyCoverageReporter"
+    classpath = configurations.codacy
+    args = [
+            "-l",
+            "Java",
+            "-r",
+            "${qaReportsDir}/jacoco/${archivesBaseName}.xml"
+    ]
+}
+
+task (codacyDepsize) << {
+    def size = 0;
+    configurations.codacy.collect { it.length() / (1024 * 1024) }.each { size += it }
+    println "Total dependencies size: ${Math.round(size * 100) / 100} Mb"
+
+    configurations
+            .codacy
+            .sort { -it.length() }
+            .each { println "${it.name} : ${Math.round(it.length() / (1024) * 100) / 100} kb" }
+}
+
+task (codacyLocs) << {
+    configurations.codacy.each {
+        String jarName = it
+        println jarName
+    }
+}
