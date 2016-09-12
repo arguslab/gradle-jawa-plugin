@@ -8,6 +8,8 @@
  * Detailed contributors are listed in the CONTRIBUTOR.md
  */
 
+def uploadToBintrayRepository = hasProperty("bintray_user")
+
 publishing {
     publications {
         MyPublication(MavenPublication) {
@@ -20,40 +22,43 @@ publishing {
 }
 
 bintray {
-    user = bintray_user
-    key = bintray_api_key
-    publications = ['MyPublication']
-    pkg {
-        repo = 'maven'
-        name = 'gradle-project'
-        userOrg = 'arguslab'
-        licenses = ['Eclipse-1.0']
-        desc = 'Gradle Jawa Plugin!'
-        websiteUrl = 'https://github.com/arguslab/gradle-jawa-plugin'
-        issueTrackerUrl = 'https://github.com/arguslab/gradle-jawa-plugin/issues'
-        vcsUrl = 'https://github.com/arguslab/gradle-jawa-plugin.git'
-        licenses = ['Apache-2.0']
-        labels = ['jawa', 'gradle']
-        publicDownloadNumbers = true
+    if(uploadToBintrayRepository) {
+        user = bintray_user
+        key = bintray_api_key
+        publications = ['MyPublication']
+        pkg {
+            repo = 'maven'
+            name = 'gradle-project'
+            userOrg = 'arguslab'
+            licenses = ['Eclipse-1.0']
+            desc = 'Gradle Jawa Plugin!'
+            websiteUrl = 'https://github.com/arguslab/gradle-jawa-plugin'
+            issueTrackerUrl = 'https://github.com/arguslab/gradle-jawa-plugin/issues'
+            vcsUrl = 'https://github.com/arguslab/gradle-jawa-plugin.git'
+            licenses = ['Apache-2.0']
+            labels = ['jawa', 'gradle']
+            publicDownloadNumbers = true
 
-        githubRepo = 'arguslab/gradle-jawa-plugin' //Optional Github repository
-        githubReleaseNotesFile = 'README.md' //Optional Github readme file
-        version {
-            name = getVersion()
-            desc = "Gradle Jawa Plugin $name"
-            released  = new Date()
-            vcsTag = getVersion()
-            //Optional configuration for GPG signing
-            gpg {
-                sign = true //Determines whether to GPG sign the files. The default is false
-                passphrase = passphrase //Optional. The passphrase for GPG signing'
-            }
-            //Optional configuration for Maven Central sync of the version
-            mavenCentralSync {
-                sync = true //[Default: true] Determines whether to sync the version to Maven Central.
-                user = mavenuser //OSS user token: mandatory
-                password = mavenpaasword //OSS user password: mandatory
-                close = '1' //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
+            githubRepo = 'arguslab/gradle-jawa-plugin' //Optional Github repository
+            githubReleaseNotesFile = 'README.md' //Optional Github readme file
+            version {
+                name = getVersion()
+                desc = "Gradle Jawa Plugin $name"
+                released = new Date()
+                vcsTag = getVersion()
+                //Optional configuration for GPG signing
+                gpg {
+                    sign = true //Determines whether to GPG sign the files. The default is false
+                    passphrase = passphrase //Optional. The passphrase for GPG signing'
+                }
+                //Optional configuration for Maven Central sync of the version
+                mavenCentralSync {
+                    sync = true //[Default: true] Determines whether to sync the version to Maven Central.
+                    user = mavenuser //OSS user token: mandatory
+                    password = mavenpaasword //OSS user password: mandatory
+                    close = '1'
+                    //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
+                }
             }
         }
     }
