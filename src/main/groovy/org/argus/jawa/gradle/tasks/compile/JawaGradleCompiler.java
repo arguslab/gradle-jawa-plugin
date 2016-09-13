@@ -15,10 +15,13 @@ import org.argus.jawa.compiler.compile.JawaCompiler;
 import org.argus.jawa.core.MsgLevel;
 import org.argus.jawa.core.PrintReporter;
 import org.argus.jawa.gradle.tasks.compile.spec.JawaJavaJointCompileSpec;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.internal.tasks.SimpleWorkResult;
 import org.gradle.api.internal.tasks.compile.CompilationFailedException;
+import org.gradle.api.internal.tasks.compile.JavaCompileSpec;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.WorkResult;
 import org.gradle.util.GFileUtils;
 import org.gradle.language.base.internal.compile.Compiler;
@@ -26,11 +29,18 @@ import org.gradle.language.base.internal.compile.Compiler;
 import java.io.File;
 import java.io.Serializable;
 
+import static org.gradle.internal.FileUtils.hasExtension;
+
 /**
  * @author <a href="mailto:fgwei521@gmail.com">Fengguo Wei</a>
  */
 public class JawaGradleCompiler implements Compiler<JawaJavaJointCompileSpec>, Serializable {
     private static final Logger LOGGER = Logging.getLogger(JawaGradleCompiler.class);
+    private final Compiler<JavaCompileSpec> javaCompiler;
+
+    public JawaGradleCompiler(Compiler<JavaCompileSpec> javaCompiler) {
+        this.javaCompiler = javaCompiler;
+    }
 
     @Override
     public WorkResult execute(JawaJavaJointCompileSpec spec) {
@@ -44,13 +54,31 @@ public class JawaGradleCompiler implements Compiler<JawaJavaJointCompileSpec>, S
             GFileUtils.deleteDirectory(spec.getDestinationDir());
         }
 
-        File[] sources = spec.getSource().getFiles().toArray(new File[spec.getSource().getFiles().size()]);
+        FileCollection jawaSources = spec.getSource().filter(new Spec<File>() {
+            public boolean isSatisfiedBy(File file) {
+                return hasExtension(file, ".pilar");
+            }
+        });
+        File[] sources = jawaSources.getFiles().toArray(new File[jawaSources.getFiles().size()]);
         File[] outputDirs = new File[]{spec.getDestinationDir()};
         PrintReporter reporter = new PrintReporter(MsgLevel.WARNING());
         if(spec.getCompileOptions().isVerbose())
             reporter = new PrintReporter(MsgLevel.INFO());
         try {
             compiler.compile(sources, outputDirs, reporter, logger, new NoCompileProgress());
+        } catch (Exception e) {
+            throw new CompilationFailedException(e);
+        }
+        try {
+            FileCollection javaSources = spec.getSource().filter(new Spec<File>() {
+                public boolean isSatisfiedBy(File file) {
+                    return hasExtension(file, ".java");
+                }
+            });
+            if(!javaSources.isEmpty()) {
+                spec.setSource(javaSources);
+                javaCompiler.execute(spec);
+            }
         } catch (Exception e) {
             throw new CompilationFailedException(e);
         }

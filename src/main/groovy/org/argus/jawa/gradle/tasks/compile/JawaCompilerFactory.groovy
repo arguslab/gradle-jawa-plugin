@@ -17,6 +17,7 @@ import org.gradle.api.internal.tasks.compile.JavaCompilerFactory
 import org.gradle.api.internal.tasks.compile.daemon.CompilerDaemonFactory
 import org.gradle.api.internal.tasks.compile.daemon.CompilerDaemonManager
 import org.gradle.api.internal.tasks.compile.daemon.InProcessCompilerDaemonFactory
+import org.gradle.language.base.internal.compile.CompileSpec
 import org.gradle.language.base.internal.compile.Compiler
 import org.gradle.language.base.internal.compile.CompilerFactory
 
@@ -40,7 +41,8 @@ public class JawaCompilerFactory implements CompilerFactory<JawaJavaJointCompile
     @Override
     public Compiler<JawaJavaJointCompileSpec> newCompiler(JawaJavaJointCompileSpec spec) {
         def jawaOptions = spec.jawaCompileOptions
-        def jawaCompiler = new JawaGradleCompiler()
+        def javaCompiler = javaCompilerFactory.createForJointCompilation(spec.getClass() as Class<? extends CompileSpec>)
+        def jawaCompiler = new JawaGradleCompiler(javaCompiler)
         CompilerDaemonFactory daemonFactory
         if (false) {
             daemonFactory = compilerDaemonFactory

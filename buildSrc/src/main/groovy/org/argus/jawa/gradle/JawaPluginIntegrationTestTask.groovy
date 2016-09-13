@@ -25,6 +25,7 @@ public class JawaPluginIntegrationTestTask extends DefaultTask {
                 ["app", true],
                 ["pure-jawa", true],
                 ["java-jawa", true],
+                ["mixed", true],
 
         ].each { projectName, runOnTravis ->
             def gradleArgs = ["clean", "jar"]
