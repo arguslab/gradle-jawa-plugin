@@ -9,8 +9,6 @@ script:
 - ./gradlew uploadArchives
 - ./gradlew --stop
 - ./gradlew integTest
-after_success:
-- ./gradlew uploadCoverageToCodacy
 before_cache:
 - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
 cache:
@@ -20,6 +18,3 @@ cache:
 notifications:
   email:
   - fgwei521@gmail.com
-env:
-  matrix:
-    secure: j3QezSwOd0Tq5s93inzF/rqQIRAm5AvFE7bxjb/IDUAvIHGPX7DnRkTu7x8MZz3DNZK19uSuUBdjUwiP4XMdVNcggMiAJakBJ1QFGeV60CjHuTk14I+GilrbcjslBtr5wYVJKZdvVStQCdbb4ps9LCWkSAF9aFZ3mQApAMWyjTU0vBqIjBLtATNINMIFw/E5vv60HreZuIJSczi98o71oSSmKPawpXZWLp9knt0F+SE31G/Ewe79Egtz3OSkfeT+0DbkuuT6sZool8oSU/BcexgFZxtyQnF5YGUOObGzcBVTYORe9UUfGa3hCXZM9eyGQ79io4YZW5NPdz9WGb20D9d3RJvmLh2UCjTMaDy/VmyGKObtGsxdChBsqy2ih0bWNPSdJQMcaWcnn0DTT/86rhv9J5HWdiSaQC9G9M2IK4YEph4kT67fypWlsXe2pFWNd7ev6SmA4vmaNfzx1jqrd24VtNRNw2kfVZcNTp2UJ6SVlbRuEyGHKPgf9Dn56DsAl9FikAXogbCnz5FHhI4WNqSGYTehL/34CcgNGAOGGoHVcwhrS3yHZKnv5Aet72SQqnVONDEO56Nfc8whsWbXjjHvn3lkdQX/12EMOgazSAwBH7E2Mm1VyQfVSYZ+Cz2c/INcOkG94jb1Eb1Sr2TFhsfIoMEVYFD3d6oReCxBGr0=

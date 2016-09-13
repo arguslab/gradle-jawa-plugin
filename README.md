@@ -30,7 +30,7 @@ Java 8 is required.
 ```groovy
 buildscript {
     dependencies {
-        classpath "com.github.arguslab:gradle-jawa-plugin:1.0"
+        classpath "com.github.arguslab:gradle-jawa-plugin:1.0.1"
     }
 }
 ```

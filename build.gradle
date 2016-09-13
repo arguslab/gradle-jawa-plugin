@@ -12,36 +12,16 @@ import org.argus.jawa.gradle.JawaPluginIntegrationTestTask
 
 buildscript {
     repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
         jcenter()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'org.ajoberstar:gradle-git:0.6.1'
+        classpath "com.gradle.publish:plugin-publish-plugin:0.9.5"
     }
-}
-
-plugins {
-    id "com.jfrog.bintray" version "1.7"
-    id 'org.ajoberstar.grgit' version '1.4.2'
-    id 'org.ajoberstar.release-opinion' version '1.4.2'
-}
-
-import org.ajoberstar.gradle.git.release.opinion.Strategies
-import org.ajoberstar.grgit.Grgit
-
-release {
-    grgit = Grgit.open(project.rootDir)
-    defaultVersionStrategy = Strategies.SNAPSHOT
-}
-
-tasks.release.dependsOn ':publishing'
-
-ext {
-    def grgit = Grgit.open(project.rootDir)
-
-    revision = grgit.head().id
-    shortMessage = grgit.head().shortMessage
 }
 
 apply plugin: "java"
@@ -49,14 +29,10 @@ apply plugin: "groovy"
 apply plugin: "maven"
 apply plugin: "signing"
 apply plugin: "idea"
-apply plugin: "jacoco"
-apply plugin: 'maven-publish'
+apply plugin: 'maven'
+apply plugin: "com.gradle.plugin-publish"
 
 apply from: "dependencies.gradle"
-apply from: "bintray.gradle"
-apply from: "codacy.gradle"
-apply from: "sonatype.gradle"
-//apply from: "git.gradle"
 
 repositories {
     jcenter()
@@ -71,39 +47,139 @@ dependencies {
     compile libraries.jawa_compiler
     testCompile libraries.spock
     testCompile libraries.jmock
-
-    codacy group: 'com.codacy', name: 'codacy-coverage-reporter', version: '1.0.7'
-    codacy group: 'com.typesafe.netty', name: 'netty-http-pipelining', version: '1.1.4'
 }
 
 
-
-
-description "Gradle Jawa Plugin."
 group = "com.github.arguslab"
-version = "1.0-SNAPSHOT"
+version = "1.0.2-SNAPSHOT"
+description = """Jawa language compiler for Gradle.  Built with Gradle $project.gradle.gradleVersion.
+Projects applying this plugin require a compile-time dependency on the jawa-compiler library.  Please include this in the depencencies closure:
+dependencies {
+    compile group: 'com.github.arguslab', name: 'jawa-compiler_2.11', version: '1.0.2'
+}
+"""
+
+final boolean isSnapshot = project.version.endsWith('-SNAPSHOT')
+
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-task groovydocJar(type: Jar, dependsOn: groovydoc) {
-    from groovydoc.destinationDir
-    classifier = "javadoc"
+pluginBundle {
+    website = 'https://github.com/arguslab/gradle-jawa-plugin'
+    vcsUrl = 'https://github.com/arguslab/gradle-jawa-plugin.git'
+    description = project.description
+    tags = ['jawa']
+
+    plugins {
+        jawaPlugin {
+            id = 'org.argus.jawa'
+            displayName = 'Jawa Gradle Plugin'
+        }
+    }
 }
 
+
+// Write the plugin's classpath to a file to share with the tests: build/createClasspathManifest/plugin-classpath.txt
+task createClasspathManifest {
+    def outputDir = file("$buildDir/$name")
+
+    inputs.files sourceSets.main.runtimeClasspath
+    outputs.dir outputDir
+
+    doLast {
+        outputDir.mkdirs()
+        file("$outputDir/plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join('\n')
+    }
+}
+
+//task groovydocJar(type: Jar, dependsOn: groovydoc) {
+//    from groovydoc.destinationDir
+//    classifier = "javadoc"
+//}
+
 task sourceJar(type: Jar) {
-    from sourceSets.main.allSource
-    classifier = "sources"
+    classifier = 'sources'
+    description 'generate sources'
+    from sourceSets.main.allJava
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    description 'generate javadoc'
+    from javadoc
 }
 
 artifacts {
-    archives jar
-    archives groovydocJar
     archives sourceJar
-    archives qaReportsJar
+    archives javadocJar
 }
 
 task integTest(type: JawaPluginIntegrationTestTask, dependsOn: "uploadArchives")
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.13'
+}
+
+def uploadToSonatypeRepository = hasProperty("sonatypeUserName")
+
+/* from 'maven' plugin */
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> if(!isSnapshot) { signing.signPom(deployment) } }
+            snapshotRepository(url: uri("gh-pages/repository/snapshot"))
+            if (uploadToSonatypeRepository) {
+                def repositoryUrl = isSnapshot ? "https://oss.sonatype.org/content/repositories/snapshots"
+                        : "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+
+                repository(url: repositoryUrl) {
+                    authentication(userName: sonatypeUserName, password: sonatypePassword)
+                }
+
+                pom.project {
+                    name project.name
+                    packaging 'jar'
+                    description project.description
+                    url "https://github.com/arguslab/gradle-jawa-plugin"
+
+                    scm {
+                        url "scm:git@github.com:arguslab/gradle-jawa-plugin.git"
+                        connection "scm:git@github.com:arguslab/gradle-jawa-plugin.git"
+                        developerConnection "scm:git@github.com:arguslab/gradle-jawa-plugin.git"
+                    }
+
+                    licenses {
+                        license {
+                            name "Eclipse-1.0"
+                            url "http://www.opensource.org/licenses/eclipse-1.0.php"
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id "fgwei"
+                            name "Fengguo (Hugo) Wei"
+                            email 'fgwei521@gmail.com'
+                            organization 'arguslab'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+signing {
+    required { !isSnapshot && gradle.taskGraph.hasTask('uploadArchives') }
+    sign configurations.archives
+}
+
+// the gradle plugin portal isn't compatible with SNAPSHOT versions
+// https://discuss.gradle.org/t/uploading-snapshot-versions-to-the-plugin-portal/11347
+if (isSnapshot) {
+    signArchives.enabled = false
+    publishPlugins.enabled = false
+} else {
+    signArchives.enabled = true
+    publishPlugins.enabled = true
 }
