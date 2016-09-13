@@ -78,25 +78,6 @@ pluginBundle {
     }
 }
 
-
-// Write the plugin's classpath to a file to share with the tests: build/createClasspathManifest/plugin-classpath.txt
-task createClasspathManifest {
-    def outputDir = file("$buildDir/$name")
-
-    inputs.files sourceSets.main.runtimeClasspath
-    outputs.dir outputDir
-
-    doLast {
-        outputDir.mkdirs()
-        file("$outputDir/plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join('\n')
-    }
-}
-
-//task groovydocJar(type: Jar, dependsOn: groovydoc) {
-//    from groovydoc.destinationDir
-//    classifier = "javadoc"
-//}
-
 task sourceJar(type: Jar) {
     classifier = 'sources'
     description 'generate sources'

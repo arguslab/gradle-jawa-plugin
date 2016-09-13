@@ -99,7 +99,7 @@ class JawaRuntime {
         }
     }
 
-    private static JawaJarFile findJawaJarFile(Iterable<File> classpath) {
+    public static JawaJarFile findJawaJarFile(Iterable<File> classpath) {
         if (classpath == null) {
             return null
         }
