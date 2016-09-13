@@ -51,7 +51,7 @@ dependencies {
 
 
 group = "com.github.arguslab"
-version = "1.0.2-SNAPSHOT"
+version = "1.0.3-SNAPSHOT"
 description = """Jawa language compiler for Gradle.  Built with Gradle $project.gradle.gradleVersion.
 Projects applying this plugin require a compile-time dependency on the jawa-compiler library.  Please include this in the depencencies closure:
 dependencies {
@@ -61,8 +61,8 @@ dependencies {
 
 final boolean isSnapshot = project.version.endsWith('-SNAPSHOT')
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_1_6
+targetCompatibility = JavaVersion.VERSION_1_6
 
 pluginBundle {
     website = 'https://github.com/arguslab/gradle-jawa-plugin'
