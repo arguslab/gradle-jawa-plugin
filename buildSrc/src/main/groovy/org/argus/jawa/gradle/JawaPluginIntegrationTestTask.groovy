@@ -62,7 +62,7 @@ public class JawaPluginIntegrationTestTask extends DefaultTask {
                 "org.gradle.jvmargs": "-Xmx2048m -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError",
                 snaphotRepositoryUrl: snaphotRepositoryUrl,
                 jawaCompilerVersion: jawaCompilerVersion,
-                jawaPluginVersion: "1.0.4-SNAPSHOT",
+                jawaPluginVersion: "1.0.5-SNAPSHOT",
         ])
         gradleProperties
     }
