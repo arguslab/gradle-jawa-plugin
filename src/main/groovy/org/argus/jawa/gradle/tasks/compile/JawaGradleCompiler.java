@@ -48,7 +48,7 @@ public class JawaGradleCompiler implements Compiler<JawaJavaJointCompileSpec>, S
 
         final LoggerAdapter logger = new LoggerAdapter();
 
-        JawaCompiler compiler = new JawaCompiler();
+        JawaCompiler compiler = new JawaCompiler(spec.getSourceCompatibility());
 
         if (spec.getJawaCompileOptions().isForce()) {
             GFileUtils.deleteDirectory(spec.getDestinationDir());
