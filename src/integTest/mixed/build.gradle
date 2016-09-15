@@ -12,7 +12,7 @@ buildscript {
     repositories {
         mavenCentral()
         maven {
-            url snaphotRepositoryUrl
+            url snapshotRepositoryUrl
         }
     }
 

@@ -56,11 +56,11 @@ public class JawaPluginIntegrationTestTask extends DefaultTask {
     }
 
     def getGradleProperties(jawaCompilerVersion) {
-        def snaphotRepositoryUrl = [project.buildFile.parentFile.absolutePath, "gh-pages", "repository", "snapshot"].join(File.separator)
+        def snapshotRepositoryUrl = [project.buildFile.parentFile.absolutePath, "gh-pages", "repository", "snapshot"].join(File.separator)
         def gradleProperties = new Properties()
         gradleProperties.putAll([
                 "org.gradle.jvmargs": "-Xmx2048m -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError",
-                snaphotRepositoryUrl: snaphotRepositoryUrl,
+                snapshotRepositoryUrl: snapshotRepositoryUrl,
                 jawaCompilerVersion: jawaCompilerVersion,
                 jawaPluginVersion: "1.0.5-SNAPSHOT",
         ])
