@@ -23,7 +23,7 @@ libraries += [
         groovy: "org.codehaus.groovy:groovy-all:${versions.groovy}",
         junit: 'junit:junit:4.12@jar',
         objenesis: 'org.objenesis:objenesis:1.2@jar',
-        jawa_compiler: "com.github.arguslab:jawa-compiler_2.11:1.0.3"
+        jawa_compiler: "com.github.arguslab:jawa-compiler_2.11:1.0.5"
 ]
 
 libraries.spock = [

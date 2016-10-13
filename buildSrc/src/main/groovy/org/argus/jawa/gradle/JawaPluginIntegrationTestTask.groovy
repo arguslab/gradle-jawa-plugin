@@ -30,7 +30,7 @@ public class JawaPluginIntegrationTestTask extends DefaultTask {
         ].each { projectName, runOnTravis ->
             def gradleArgs = ["clean", "jar"]
             [
-                    ["2.13", true,  "1.0.3"],
+                    ["2.13", true,  "1.0.5"],
             ].each { testParameters ->
                 if (!travis || (runOnTravis && testParameters[1])) {
                     def gradleVersion = testParameters[0]
