@@ -56,7 +56,7 @@ public class JawaGradleCompiler implements Compiler<JawaJavaJointCompileSpec>, S
 
         FileCollection jawaSources = spec.getSource().filter(new Spec<File>() {
             public boolean isSatisfiedBy(File file) {
-                return hasExtension(file, ".pilar");
+                return hasExtension(file, ".jawa");
             }
         });
         File[] sources = jawaSources.getFiles().toArray(new File[jawaSources.getFiles().size()]);

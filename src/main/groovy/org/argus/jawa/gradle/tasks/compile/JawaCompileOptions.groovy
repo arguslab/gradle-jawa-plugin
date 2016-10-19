@@ -30,7 +30,7 @@ public class JawaCompileOptions extends AbstractOptions {
 
     private boolean fork = true
 
-    private List<String> fileExtensions = ImmutableList.of("java", "pilar")
+    private List<String> fileExtensions = ImmutableList.of("java", "jawa")
 
     private JawaForkOptions forkOptions = new JawaForkOptions()
 

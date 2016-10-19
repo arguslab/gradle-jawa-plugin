@@ -1,2 +1,0 @@
-record `org.argus.jawa.purejawa.IJawa` @kind interface @AccessFlag PUBLIC_ABSTRACT_INTERFACE {
-}

@@ -34,7 +34,7 @@ class JawaCompileOptionsTest {
         assertFalse(compileOptions.listFiles)
         assertFalse(compileOptions.verbose)
         assertTrue(compileOptions.fork)
-        assertEquals(['java', 'pilar'], compileOptions.fileExtensions)
+        assertEquals(['java', 'jawa'], compileOptions.fileExtensions)
         assertNotNull(compileOptions.forkOptions)
     }
 

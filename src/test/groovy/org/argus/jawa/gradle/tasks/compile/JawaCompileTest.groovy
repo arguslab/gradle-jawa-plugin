@@ -46,7 +46,7 @@ class JawaCompileTest extends AbstractCompileTest {
         testObj = createTask(JawaCompile)
         testObj.setCompiler(jawaCompilerMock)
 
-        GFileUtils.touch(new File(srcDir, "incl/file.pilar"))
+        GFileUtils.touch(new File(srcDir, "incl/file.jawa"))
     }
 
     @Unroll

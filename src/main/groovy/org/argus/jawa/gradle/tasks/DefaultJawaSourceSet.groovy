@@ -23,10 +23,10 @@ public class DefaultJawaSourceSet implements JawaSourceSet {
 
     public DefaultJawaSourceSet(String displayName, SourceDirectorySetFactory sourceDirectorySetFactory) {
         jawa = sourceDirectorySetFactory.create(String.format("%s Jawa source", displayName))
-        jawa.getFilter().include("**/*.java", "**/*.pilar")
+        jawa.getFilter().include("**/*.java", "**/*.jawa")
         allJawa = sourceDirectorySetFactory.create(String.format("%s Jawa source", displayName))
         allJawa.source(jawa)
-        allJawa.getFilter().include("**/*.pilar")
+        allJawa.getFilter().include("**/*.jawa")
     }
 
     public SourceDirectorySet getJawa() {

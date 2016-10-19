@@ -29,19 +29,19 @@ class NormalizingJawaGradleCompilerTest extends Specification {
     def setup() {
         spec.classpath = files('Dep1.jar', 'Dep2.jar', 'Dep3.jar')
         spec.jawaClasspath = spec.classpath
-        spec.source = files('House.scala', 'Person1.java', 'package.html', 'Person2.pilar')
+        spec.source = files('House.scala', 'Person1.java', 'package.html', 'Person2.jawa')
         spec.destinationDir = new File("destinationDir")
         spec.compileOptions = new CompileOptions()
         spec.jawaCompileOptions = new JawaCompileOptions()
     }
 
-    def "silently excludes source files not ending in .java or .pilar by default"() {
+    def "silently excludes source files not ending in .java or .jawa by default"() {
         when:
         compiler.execute(spec)
 
         then:
         1 * target.execute(spec) >> {
-            assert spec.source.files == files('Person1.java', 'Person2.pilar').files
+            assert spec.source.files == files('Person1.java', 'Person2.jawa').files
         }
     }
 
