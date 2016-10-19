@@ -98,7 +98,7 @@ artifacts {
 task integTest(type: JawaPluginIntegrationTestTask, dependsOn: "uploadArchives")
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.13'
+    gradleVersion = '2.14.1'
 }
 
 def uploadToSonatypeRepository = hasProperty("sonatypeUserName")
