@@ -47,6 +47,7 @@ dependencies {
     compile libraries.jawa_compiler
     testCompile libraries.spock
     testCompile libraries.jmock
+    testCompile libraries.junit
 }
 
 
