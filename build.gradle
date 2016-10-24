@@ -52,11 +52,11 @@ dependencies {
 
 
 group = "com.github.arguslab"
-version = "1.0.7-SNAPSHOT"
+version = "1.0.7"
 description = """Jawa language compiler for Gradle.  Built with Gradle $project.gradle.gradleVersion.
 Projects applying this plugin require a compile-time dependency on the jawa-compiler library.  Please include this in the depencencies closure:
 dependencies {
-    compile group: 'com.github.arguslab', name: 'jawa-compiler_2.11', version: '1.0.6'
+    compile group: 'com.github.arguslab', name: 'jawa-compiler_2.11', version: '1.0.7'
 }
 """
 
